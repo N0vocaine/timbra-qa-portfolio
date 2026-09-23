@@ -1,0 +1,26 @@
+# Documentation-only portfolio: guard against accidental additions
+
+# Environment / secrets
+.env
+.env.*
+*.pem
+*.key
+
+# Dependencies
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+*~
+
+# Editor settings
+.vscode/
+.idea/
+*.swp
