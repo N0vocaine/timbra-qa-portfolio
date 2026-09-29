@@ -1,6 +1,6 @@
 # Timbra — QA & Product Case Study
 
-**Timbra is a smart booking platform for the salon industry that I created from the ground up as a real-world product and QA project.** It recommends the booking times that keep a salon's calendar efficient, while every other valid time stays fully bookable.
+**Timbra is a smart booking platform for the salon industry that I created from the ground up as a real-world product and QA project.** Online customers are offered only the booking times that keep a salon's calendar compact, while the salon owner can still book any valid time.
 
 ### ▶ [Try Timbra Demo](https://timbra-booking-demo.vercel.app)
 
@@ -27,24 +27,24 @@ I'm **Adriana Bucur**, a QA / Software Tester. I defined Timbra's product concep
 |---|---|
 | **Product** | Online booking for a salon: customers book treatments; the salon owner manages treatments, working hours and bookings |
 | **Live demo** | [Try Timbra Demo](https://timbra-booking-demo.vercel.app): interactive, fictional data |
-| **What's interesting** | "Magnetic Booking": valid times are *ranked* so the calendar keeps fewer unusable gaps, without hiding any valid choice |
+| **What's interesting** | "Magnetic Booking": each free window shows only its edge times, which move inward as bookings are made, helping reduce unusable gaps |
 | **My role** | Product creator and QA owner: concept, requirements, business rules, QA strategy, risk analysis, test design and execution, regression analysis, validation |
 | **QA evidence** | [25 selected test cases](docs/qa/test-cases/README.md) · [Traceability examples](docs/qa/traceability-examples.md) · [5 regression case studies](docs/qa/regression-case-studies.md) · [Risk register](docs/qa/risk-register.md) |
-| **Testing** | 500+ automated tests (unit, domain logic, real-database integration, security guards) plus manual functional, visual and responsive testing |
+| **Testing** | 654 automated unit and domain-logic tests (including security guards), plus real-database integration tests and manual functional, visual and responsive testing |
 | **Stack (high level)** | Next.js · TypeScript · PostgreSQL (Supabase) · Vitest · Docker · Vercel · Git / GitHub |
-| **Status** | Working V1 for one salon, still in development. Not a finished commercial SaaS product. |
+| **Status** | Working V2 pilot with a live demo for one salon, currently in development and stakeholder validation. Not a finished commercial SaaS product. |
 
 ## The problem
 
-A salon's day isn't made of identical one-hour blocks. Treatments have different lengths, and each one also needs **preparation time** before it and **cleanup (buffer) time** after it. If bookings land in awkward places, the day fills up with small gaps that are too short to sell, and that time is lost.
+A salon's day isn't made of identical one-hour blocks. Treatments have different lengths, and some need **preparation time** before the customer arrives. If bookings land in awkward places, for example a short treatment in the middle of a long free period, the day fills up with small gaps that are too short to sell, and that time is lost.
 
-At the same time, customers should keep **free choice**. A system that only offers a curated shortlist of times feels restrictive and loses their trust.
-
-Timbra's answer: **work out every time that is genuinely bookable, then recommend the ones that fit the calendar best.**
+Timbra V2's answer is **edge-only Magnetic Booking**: online customers are offered only the times at the edges of each free window, and those times move inward as bookings fill the day. The salon owner can still book any valid time.
 
 **Why it's hard to test:** correctness depends on exact time boundaries, daylight-saving transitions, simultaneous booking requests, and a ranking algorithm that must never change which times are valid.
 
 ## How Timbra decides which times to offer
+
+*V1 design history, kept to show how the product evolved. In V2, the public page shows only the edge times of each free window; the eligibility rules below still apply.*
 
 ```mermaid
 flowchart LR
