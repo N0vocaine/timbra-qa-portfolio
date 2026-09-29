@@ -2,6 +2,12 @@
 
 **Timbra is a smart booking platform for the salon industry that I created from the ground up as a real-world product and QA project.** It recommends the booking times that keep a salon's calendar efficient, while every other valid time stays fully bookable.
 
+### ▶ [Try Timbra Demo](https://timbra-booking-demo.vercel.app)
+
+Explore the interactive booking flow, Magnetic Booking and the read-only salon admin in a live demo with fictional data (a development demo, not a production system).
+
+*The live demo shows the current V2 pilot rules; the case study below documents the earlier V1 implementation and evolution.*
+
 I'm **Adriana Bucur**, a QA / Software Tester. I defined Timbra's product concept, requirements, business rules and booking logic, and directed the project from the first idea through implementation, testing and validation. This portfolio documents the QA side of that work:
 
 **Requirement → Risk → Test Scenario → Test Case → Test Execution → Evidence → Regression Protection**
@@ -20,6 +26,7 @@ I'm **Adriana Bucur**, a QA / Software Tester. I defined Timbra's product concep
 | | |
 |---|---|
 | **Product** | Online booking for a salon: customers book treatments; the salon owner manages treatments, working hours and bookings |
+| **Live demo** | [Try Timbra Demo](https://timbra-booking-demo.vercel.app): interactive, fictional data |
 | **What's interesting** | "Magnetic Booking": valid times are *ranked* so the calendar keeps fewer unusable gaps, without hiding any valid choice |
 | **My role** | Product creator and QA owner: concept, requirements, business rules, QA strategy, risk analysis, test design and execution, regression analysis, validation |
 | **QA evidence** | [25 selected test cases](docs/qa/test-cases/README.md) · [Traceability examples](docs/qa/traceability-examples.md) · [5 regression case studies](docs/qa/regression-case-studies.md) · [Risk register](docs/qa/risk-register.md) |
