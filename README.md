@@ -79,7 +79,25 @@ flowchart LR
 - **Ranking** answers *"How good is this time compared with the others?"* It only **orders** the times it receives and never removes one; the first is marked as recommended.
 - On submit, the server recalculates the offer for the same audience, so an online customer can't book an interior time by editing the request.
 
-The V1 design (eligibility → ranking, with every valid time shown to the customer) is kept as history in [Magnetic Booking](docs/product/magnetic-booking.md#v1-design-history). The screenshots below are from V1.
+### V2 in the live demo
+
+![Public booking page: Classic facial on 2026-10-06, with 10:10 as the recommended time and 15:10 as the only other available time](assets/screenshots/06-v2-public-booking-edge-times.png)
+
+*V2 public booking, captured 30 September 2026 from the [live demo](https://timbra-booking-demo.vercel.app/sv/booking). "Classic facial" (60 min, 5 min preparation) on 2026-10-06, a day with one free window (10:05–16:10). Only its two edge times are offered: **10:10** (recommended) and **15:10**. No time in the middle of the window is shown, and there is no "Show more".*
+
+![Public booking page: Classic facial on 2026-10-01, with 11:20 recommended and 19:00, 09:05 and 09:25 as the other available times](assets/screenshots/07-v2-public-booking-two-free-windows.png)
+
+*V2 public booking, captured 30 September 2026. On 2026-10-01 (open 09:00–20:00), one existing booking (10:30–11:15, preparation from 10:25) splits the day into two free windows. Each window offers its own two edges: **09:05** and **09:25** (09:00–10:25), and **11:20** and **19:00** (11:15–20:00). Ranking only orders these four times, and 11:20 is recommended.*
+
+![Admin agenda for 2026-10-06: a preparation row before each booking, no buffer rows, and the free window 10:05–16:10 between them](assets/screenshots/08-v2-admin-agenda-preparation-no-buffer.png)
+
+*V2 admin agenda (read-only demo), captured 30 September 2026, for the same day as the first screenshot. Preparation appears as its own row before each treatment (Förberedelsetid = preparation time), there is no buffer after the treatments, and the free window 10:05–16:10 is shown as "Ledig" (free). Customer names are masked in the demo.*
+
+These screenshots show what the demo offers. They don't show the server-side re-check of a submitted time, how the offer is recalculated after a booking, or test results. Those are covered in [From V1 to V2](docs/product/evolution-v1-to-v2.md#6-verification).
+
+### Historical V1 screenshots
+
+The V1 design (eligibility → ranking, with every valid time shown to the customer) is kept as history in [Magnetic Booking](docs/product/magnetic-booking.md#v1-design-history).
 
 ![Customer booking page showing 13:05 as the recommended time, with other valid times such as 09:05, 10:30 and 15:30 still available to choose](assets/screenshots/01-magnetic-booking-recommended-time.png)
 

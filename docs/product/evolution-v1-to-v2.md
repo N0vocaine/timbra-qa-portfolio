@@ -103,6 +103,10 @@ That leaves one free window, **10:05–16:10**. A customer chooses a 60-minute t
 
 **After (V2).** Only **10:10** and **15:10** are offered. 12:00 is technically free, but it would split the window in two, so it is not offered.
 
+![Public booking page: Classic facial on 2026-10-06, with 10:10 as the recommended time and 15:10 as the only other available time](../../assets/screenshots/06-v2-public-booking-edge-times.png)
+
+*The same day on the live demo, captured 30 September 2026: only the two edge times are offered.*
+
 **After one booking.** A customer books 10:10, which blocks 10:05–11:10. The window shrinks to 11:10–16:10, and the offered times become **11:15** and **15:10**. The upper edge has moved inward; the lower edge is unchanged.
 
 ```

@@ -29,6 +29,10 @@ flowchart LR
 - **Neither step can make an ineligible time bookable.** The server re-checks every booking against the same audience's rules, so a customer cannot book an interior time by editing the request.
 - **The salon owner keeps every valid time** in the admin area.
 
+![Public booking page: Classic facial on 2026-10-01, with 11:20 recommended and 19:00, 09:05 and 09:25 as the other available times](../../assets/screenshots/07-v2-public-booking-two-free-windows.png)
+
+*Live demo, captured 30 September 2026. One existing booking (10:30–11:15, preparation from 10:25) splits the day into two free windows, 09:00–10:25 and 11:15–20:00. Each offers its own two edges (09:05 and 09:25; 11:20 and 19:00), and ranking only orders them (11:20 recommended).*
+
 The full V2 flow (booking window, minimum notice, server re-check) and a before → after example are in [From V1 to V2](evolution-v1-to-v2.md#4-v2-behaviour).
 
 ## V1 design (history)
