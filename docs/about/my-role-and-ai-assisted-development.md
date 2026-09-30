@@ -27,10 +27,17 @@ The application code was generated with an AI coding assistant under my directio
 ## What I was responsible for
 
 ### Product concept, requirements and business rules
-- Created the product concept: a salon booking platform that recommends calendar-friendly times without restricting customer choice (Magnetic Booking).
+- Created the product concept: a salon booking platform that recommends calendar-friendly times (Magnetic Booking). In V1, this was done without restricting customer choice.
 - Defined the V1 scope: one salon, one practitioner, Swedish and English, customer self-service, and admin management.
+- Turned the salon owner's feedback on V1 into the V2 rules:
+  - technically available is not the same as offered;
+  - online customers are offered only the edge times of each free window, while the salon owner keeps every valid time;
+  - preparation is 5 minutes and the buffer is 0 in the pilot;
+  - customers and the admin have separate booking windows.
+
+  See [From V1 to V2](../product/evolution-v1-to-v2.md).
 - Defined the business rules and directed the product decisions that made them testable, for example:
-  - A recommendation is a **suggestion, never a restriction**. Every valid time stays bookable.
+  - V1: a recommendation is a **suggestion, never a restriction**, and every valid time stays bookable. In V2 this still holds for the salon owner, while online customers are offered the edge times.
   - A schedule exception **replaces** the weekly hours for that date rather than merging with them.
   - The admin may skip minimum notice for manual bookings, but can **never** book a past time.
   - Admin-created bookings don't send customer notifications.

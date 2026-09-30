@@ -59,16 +59,29 @@ flowchart LR
 | **Evidence** | Automated |
 | **Coverage** | **Covered** |
 
-## Example 4: The recommendation must not restrict choice
+## Example 4: The recommendation must not hide an offered time
 
 | Step | Content |
 |---|---|
-| **Requirement** | REQ-MAG-004 / REQ-MAG-005: ranking only reorders; the recommended highlight never hides valid times |
-| **Risk** | Customers lose choice and trust; the core product principle is broken (Critical) |
+| **Requirement** | REQ-MAG-004 / REQ-MAG-005: ranking only reorders; the recommended highlight never hides an offered time |
+| **Risk** | Choice restricted beyond the product rules; customers lose trust (Critical) |
 | **Scenarios** | Ranking a set of valid slots; displaying ranked slots with a recommendation |
-| **Test cases** | [MAG-005](test-cases/magnetic-ranking.md#mag-005-ranking-never-changes-which-slots-are-eligible), [MAG-004](test-cases/magnetic-ranking.md#mag-004-the-recommendation-never-hides-other-valid-times) |
+| **Test cases** | [MAG-005](test-cases/magnetic-ranking.md#mag-005-ranking-never-changes-which-slots-are-eligible), [MAG-004](test-cases/magnetic-ranking.md#mag-004-the-recommendation-never-hides-other-offered-times) |
 | **Tests** | Invariant test (same set in, same set out); presentation-rule unit test; manual browser check as part of the customer flow |
 | **Coverage** | **Covered** (logic); the rendered display is checked manually |
+| **V2 note** | In V1, "offered" meant every valid time. In V2, online customers are offered only the edge times of each free window, and the salon owner every valid time. See Example 5. |
+
+## Example 5: Online customers are offered only edge times (V2)
+
+| Step | Content |
+|---|---|
+| **Requirement** | REQ-MB2-001 to REQ-MB2-004: edge-only public offer, enforced again on submit, recalculated after each booking, with every valid time kept for the salon owner |
+| **Risk** | Short treatments split long free periods into unsellable gaps; the rule is bypassed by a crafted request; the salon owner is blocked from booking regular clients |
+| **Scenarios** | Offered times on a day with one free window; a crafted request for an interior time; the offer after one booking; admin availability on the same day |
+| **Test cases** | [MB2-001](test-cases/magnetic-booking-v2.md#mb2-001-only-the-edge-times-of-each-free-window-are-offered-publicly), [MB2-002](test-cases/magnetic-booking-v2.md#mb2-002-a-crafted-request-for-an-interior-time-is-rejected-in-the-public-flow), [MB2-003](test-cases/magnetic-booking-v2.md#mb2-003-after-a-booking-the-offered-times-move-inward), [MB2-004](test-cases/magnetic-booking-v2.md#mb2-004-the-salon-owner-still-sees-every-valid-time) |
+| **Tests** | Domain-logic edge-selection tests; submit and story tests with the data layer replaced by test doubles |
+| **Manual / demo evidence** | Local manual walkthrough (29 September 2026); demo checks after deployment (29 September 2026) |
+| **Coverage** | **Covered** (logic). Admin booking of an interior time is not checked on the demo, which has a read-only admin area. Salon owner validation of V2 is still planned. |
 
 ---
 
@@ -83,6 +96,7 @@ flowchart LR
 | REQ-SCH-002 Exception replaces weekly hours | — | SCH-002 | ✔ | — | Covered |
 | REQ-ADM-004 Admin bypass limited to notice | RISK-003 | ADM-006, ADM-007 | ✔ | — | Covered |
 | REQ-MAG-004 Ranking never changes eligibility | — | MAG-005 | ✔ | — | Covered |
+| REQ-MB2-001…004 V2 edge-only public offer, admin keeps every valid time | — | MB2-001…004 | ✔ | ✔ recorded (local walkthrough, demo checks) | Covered; salon owner validation pending |
 | REQ-TZ-002/003 Non-existent / ambiguous times rejected | RISK-002 | TZ-002, TZ-003 | ✔ | — | Covered |
 | REQ-CAN-003 Exact cutoff | — | CAN-003/004/005 | ✔ | — | Covered |
 | REQ-AUTH-001…005 Admin protection | RISK-004 | AUTH-001/002/004/006 | ✔ | — | Covered |

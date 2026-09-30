@@ -8,15 +8,15 @@ This page describes Timbra's main user flows at a high level: the customer journ
 flowchart TD
     S["Customer opens the booking site<br/>(Swedish or English)"] --> T["Chooses a treatment"]
     T --> D["Chooses a date<br/>(within the booking window)"]
-    D --> A["Sees available times<br/>one highlighted as Recommended"]
-    A --> P["Picks any valid time"]
+    D --> A["Sees the offered times<br/>(V2: edge times of each free window)<br/>one highlighted as Recommended"]
+    A --> P["Picks one of the offered times"]
     P --> F["Enters name, email, phone"]
     F --> V{"Details valid?"}
     V -- "No" --> F
-    V -- "Yes" --> R{"Server re-checks:<br/>is the time still valid?"}
-    R -- "No longer valid" --> C["Friendly 'this time was just taken' message<br/>no booking created"]
+    V -- "Yes" --> R{"Server re-checks:<br/>is the time still offered?"}
+    R -- "No longer offered" --> C["Friendly 'this time was just taken' message<br/>no booking created"]
     C --> A
-    R -- "Still valid" --> B["Booking saved<br/>(database rejects any overlap)"]
+    R -- "Still offered" --> B["Booking saved<br/>(database rejects any overlap)"]
     B --> OK["Confirmation page<br/>+ confirmation message queued"]
     OK --> M["Customer can later use a private<br/>manage link to view or cancel"]
 ```
@@ -25,10 +25,10 @@ flowchart TD
 
 | Step | Main risks | How it's tested |
 |---|---|---|
-| Available times | Offering an invalid time; hiding a valid one | Automated unit and domain-logic tests of eligibility and ranking |
-| Recommended time | Recommendation hiding the other options | Automated test that all valid times stay present; manual check in the browser |
+| Available times | Offering an invalid time; offering an interior time publicly (V2); hiding an offered time | Automated unit and domain-logic tests of eligibility, the V2 edge filter and ranking |
+| Recommended time | Recommendation hiding the other offered times | Automated test that every offered time stays present; manual check in the browser |
 | Customer details | Bad data accepted, or good data rejected | Automated validation tests with valid and invalid inputs |
-| Server re-check | A stale time gets booked | Automated recalculation tests; database-level overlap tests |
+| Server re-check | A stale time, or a crafted interior time (V2), gets booked | Automated recalculation tests, including the V2 public-offer re-check; database-level overlap tests |
 | Saving the booking | Double booking under simultaneous requests | Automated real-database concurrency test |
 | Confirmation page | Showing more data than necessary | Automated check that only a fixed summary is shown (no tokens, email or phone) |
 | Whole journey in a browser | Something breaks between the steps | **Manual** end-to-end testing. No browser automation yet (see [limitations](../qa/known-limitations-and-future-qa.md)). |

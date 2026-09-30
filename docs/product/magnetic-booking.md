@@ -1,13 +1,39 @@
-# Magnetic Booking: Eligibility vs Ranking
+# Magnetic Booking: Eligibility, the V2 Edge Filter and Ranking
 
-Magnetic Booking is the core product idea in Timbra. From a QA point of view it is also the most interesting part: two separate questions have to be answered correctly, **and must never interfere with each other**.
+Magnetic Booking is the core product idea in Timbra: the booking logic protects the salon's calendar from unusable gaps. This page describes the **current V2 behaviour**, which the [live demo](https://timbra-booking-demo.vercel.app) runs, and keeps the **V1 design** as history. [From V1 to V2](evolution-v1-to-v2.md) explains why it changed.
 
-| Question | Name | Result |
-|---|---|---|
-| *"Can this time slot be booked?"* | **Eligibility** | Yes / No |
-| *"How good is this valid slot compared with the other valid slots?"* | **Ranking** | An order |
+## Current behaviour (V2)
 
-The top-ranked slot is shown as the **recommended time**. The recommendation is a suggestion only: **every other valid slot remains visible and bookable.**
+Three separate questions are answered, in this order:
+
+| Question | Name | Applies to | Result |
+|---|---|---|---|
+| *"Can this time slot be booked?"* | **Eligibility** | Everyone | Yes / No |
+| *"Should this eligible time be offered to an online customer?"* | **V2 edge filter** | Online customers only | Offered / not offered |
+| *"How good is this time compared with the others?"* | **Ranking** | Everyone | An order |
+
+```mermaid
+flowchart LR
+    A["Candidate time slots"] --> B{"Eligibility<br/>Can this slot be booked?"}
+    B -- "No" --> X["Never offered"]
+    B -- "Yes" --> C["Valid time slots"]
+    C --> D{"Who is booking?"}
+    D -- "Online customer" --> E["V2 edge filter<br/>earliest + latest valid time<br/>of each free window"]
+    D -- "Salon owner" --> F["Every valid time"]
+    E --> R1["Ranking: order only<br/>first = recommended"]
+    F --> R2["Ranking: order only<br/>first = recommended"]
+```
+
+- **The V2 edge filter restricts** what online customers are offered: per free window, only the earliest and the latest valid start. After a booking, the window shrinks, so the offered times move inward.
+- **Ranking only orders.** It never adds or removes a time; the first one it returns is marked as recommended.
+- **Neither step can make an ineligible time bookable.** The server re-checks every booking against the same audience's rules, so a customer cannot book an interior time by editing the request.
+- **The salon owner keeps every valid time** in the admin area.
+
+The full V2 flow (booking window, minimum notice, server re-check) and a before → after example are in [From V1 to V2](evolution-v1-to-v2.md#4-v2-behaviour).
+
+## V1 design (history)
+
+In V1, only two questions were answered: **eligibility** and **ranking**. The top-ranked slot was shown as the recommended time, and **every other valid slot remained visible and bookable** for the customer.
 
 ```mermaid
 flowchart LR
@@ -19,11 +45,15 @@ flowchart LR
     D --> F["All other valid times<br/>(still fully bookable)"]
 ```
 
+The sections below explain the mechanics shared by V1 and V2. Where V2 differs, a note says so.
+
 ---
 
 ## 1. Four timestamps per booking
 
 Every treatment has three durations: **preparation**, **treatment** and **buffer** (cleanup). The customer only sees the treatment time, but the calendar is blocked for all three.
+
+> **V2 pilot:** the pilot salon uses 5 minutes of preparation and **no buffer** (buffer = 0). The model below still supports a buffer, and the V1 example keeps one.
 
 ```
 occupied start   ─┐
@@ -50,7 +80,7 @@ occupied end     ─┘
 
 ![Admin day view showing a 5-minute preparation segment, a booking from 13:00 to 13:50, and a 10-minute buffer segment](../../assets/screenshots/02-admin-day-view-prep-treatment-buffer.png)
 
-*Occupied interval: availability and collision checks include preparation + treatment + buffer, not only the customer-visible appointment.* <sub>Swedish labels: Förberedelse = preparation · Bokad = booked · Buffert / städning = buffer / cleanup. Fictional demo data.</sub>
+*Historical V1 screenshot. Occupied interval: availability and collision checks include preparation + treatment + buffer, not only the customer-visible appointment. In the V2 pilot, this booking would have no buffer segment.* <sub>Swedish labels: Förberedelse = preparation · Bokad = booked · Buffert / städning = buffer / cleanup. Fictional demo data.</sub>
 
 ## 2. Eligibility: "Can this time slot be booked?"
 
@@ -99,23 +129,26 @@ The salon is open 09:00–12:00, and an existing booking occupies 10:00–10:30.
 | **09:00** | 09:30–10:00 (30 min, still usable) | 1 | Ranked higher |
 | 09:15 | 09:00–09:15 and 09:45–10:00 (two 15-min pieces) | 2 | Ranked lower |
 
-**09:00 is recommended**, because it keeps the remaining time usable. The customer is still completely free to choose 09:15 or any other valid time.
+**09:00 is recommended**, because it keeps the remaining time usable. In V1, the customer could still choose 09:15 or any other valid time.
 
-## 4. The rule that ties it together
+**In V2**, the same day has two free windows: 09:00–10:00 and 10:30–12:00. An online customer is offered only their edges: **09:00, 09:30, 10:30 and 11:30**. 09:15 is not offered, because it would split the first window. Ranking then orders those four times. The salon owner can still book 09:15.
+
+## 4. The rules that tie it together
 
 > **Ranking changes the order of valid times. It never changes which times are valid.**
 
 - A slot that is not eligible can never become bookable by ranking well.
 - An eligible slot can never become unbookable by ranking poorly.
-- The recommendation never hides or disables other valid times.
+- The recommendation never hides or disables another **offered** time. In V1 every valid time was offered to the customer; in V2 the customer is offered the edge times, and the salon owner every valid time.
+- **V2:** the edge filter only ever removes times from the public offer. It never adds a time that isn't eligible.
 
-These guarantees are tested as requirements in their own right: see [MAG-004 and MAG-005](../qa/test-cases/magnetic-ranking.md).
+These guarantees are tested as requirements in their own right: see [MAG-004 and MAG-005](../qa/test-cases/magnetic-ranking.md) and the [V2 test cases](../qa/test-cases/magnetic-booking-v2.md).
 
-**In the application:** an 80-minute treatment (95 minutes occupied) on a split Wednesday, 09:00–12:00 and 13:00–17:00, with no other bookings. The best candidates each sit flush against one edge of a working period, leaving one free fragment, so rule 1 ties between them. **13:05 wins**. Rule 2 prefers the afternoon options, which leave a larger remaining free block in the longer afternoon period. Rule 3 then picks the earliest of those. The earliest valid time, **09:05**, is not recommended, but it is still offered with all the other valid times.
+**In the application (V1, historical):** an 80-minute treatment (95 minutes occupied) on a split Wednesday, 09:00–12:00 and 13:00–17:00, with no other bookings. The best candidates each sit flush against one edge of a working period, leaving one free fragment, so rule 1 ties between them. **13:05 wins**. Rule 2 prefers the afternoon options, which leave a larger remaining free block in the longer afternoon period. Rule 3 then picks the earliest of those. The earliest valid time, **09:05**, is not recommended, but it is still offered with all the other valid times.
 
 ![Customer booking page showing 13:05 as the recommended time, with other valid times such as 09:05, 10:30 and 15:30 still available to choose](../../assets/screenshots/01-magnetic-booking-recommended-time.png)
 
-*Magnetic Booking: all valid times remain bookable. Timbra recommends the slot that best preserves an efficient calendar.*
+*Historical V1 screenshot: all valid times remained bookable, and Timbra recommended the slot that best preserved an efficient calendar. In V2, online customers see only the edge times of each free window.*
 
 ## 5. Why this design is testable
 
@@ -125,6 +158,8 @@ These guarantees are tested as requirements in their own right: see [MAG-004 and
 
 ## Related documents
 
+- [From V1 to V2](evolution-v1-to-v2.md)
+- [Test cases: Magnetic Booking V2](../qa/test-cases/magnetic-booking-v2.md)
 - [Test cases: booking engine](../qa/test-cases/booking-engine.md)
 - [Test cases: Magnetic Ranking](../qa/test-cases/magnetic-ranking.md)
 - [Booking flow](booking-flow.md)

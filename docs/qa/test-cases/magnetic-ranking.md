@@ -39,20 +39,21 @@ These cases cover **ranking** (*"How good is this valid slot compared with the o
 | Evidence | Automated domain-logic test (ranking) |
 | Notes | A third rule (MAG-003) breaks any remaining tie by earliest start, so the result is always deterministic |
 
-### MAG-004: The recommendation never hides other valid times
+### MAG-004: The recommendation never hides other offered times
 
 | Field | Value |
 |---|---|
-| Requirement | REQ-MAG-005: the recommended highlight never removes, hides or disables other valid times |
-| Risk | Customer choice restricted, which erodes trust (a stated product principle) |
+| Requirement | REQ-MAG-005: the recommended highlight never removes, hides or disables another offered time |
+| Risk | Choice restricted beyond the product rules, which erodes trust |
 | Priority | Critical |
 | Technique | Positive |
 | Level | Unit (presentation rule) + manual browser check |
-| Preconditions | A ranked list of eligible times |
+| Preconditions | A ranked list of offered times |
 | Steps | 1. Apply the presentation rule that marks the top-ranked time as recommended<br>2. Compare the displayed set with the ranked set |
-| Expected result | **Every eligible time is still present and selectable.** Only the top-ranked time is marked "recommended". Times beyond the initial visible count remain reachable through "show more". |
-| Automation | Automated (presentation rule). The rendered display is part of the manual customer-flow check in the [Test Plan](../test-plan.md). |
-| Evidence | Automated unit test (ranked-times presentation) |
+| Expected result | **Every offered time is still present and selectable.** Only the top-ranked time is marked "recommended". Admin page: times beyond the initial visible count stay reachable through "show more". Public page (V2): every offered time is shown directly, with no "show more". |
+| Automation | Automated (presentation rules for both pages). The rendered display is part of the manual customer-flow check in the [Test Plan](../test-plan.md). |
+| Evidence | Automated unit tests (ranked-times presentation) |
+| Notes | **V1 vs V2:** in V1 the offered set was every eligible time, for customers too. In V2 the public offered set is the edge times ([MB2-001](magnetic-booking-v2.md#mb2-001-only-the-edge-times-of-each-free-window-are-offered-publicly)); the admin offered set is still every eligible time. |
 
 ### MAG-005: Ranking never changes which slots are eligible
 

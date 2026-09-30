@@ -4,7 +4,7 @@ This document explains **how and why** Timbra is tested. It changes rarely. The 
 
 ## 1. Quality objectives
 
-These objectives are tied to what V1 actually does:
+These objectives are tied to what Timbra actually does. They were written for V1; objective 7 has been updated for the V2 pilot ([From V1 to V2](../product/evolution-v1-to-v2.md)).
 
 1. **No double bookings**, enforced by the database and not only in application code.
 2. **No bookings in the past**, for any user, including the admin.
@@ -12,7 +12,7 @@ These objectives are tied to what V1 actually does:
 4. **A deterministic, explainable recommendation.** Ranking must never make an invalid time bookable or a valid time unbookable.
 5. **A protected admin area**, with authorization checked at two independent layers.
 6. **Secrets and private links kept out of the browser.**
-7. **Customer choice preserved.** The recommendation never hides valid times.
+7. **The offer follows the product rules, and nothing more.** The recommendation never hides an offered time. In V2, online customers are offered only the edge times of each free window, enforced again when the booking is submitted, and the salon owner keeps every valid time. (V1 objective: "Customer choice preserved. The recommendation never hides valid times.")
 
 ## 2. Risk-based approach
 
@@ -161,7 +161,7 @@ Severity describes **impact**, not the order in which fixes are made.
 
 ## 12. Current automation snapshot
 
-**500+ automated tests** (Vitest). Most need no infrastructure at all; the database integration tests run against a real local PostgreSQL database.
+**654 automated unit and domain-logic tests** (Vitest) as of the V2 pilot. They need no infrastructure. In addition, database integration tests run against a real local PostgreSQL database; they are a separate suite and are not included in that number.
 
 The exact number changes as the project grows. Coverage of the risks matters more than the count.
 

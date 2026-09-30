@@ -23,7 +23,7 @@ I'm **Adriana Bucur**, a QA / Software Tester. I defined Timbra's product concep
 > - **AI-assisted implementation:** the application code was generated with an AI coding assistant under my direction and review. My contribution is the product, quality and validation work documented in this portfolio. [More about my role](docs/about/my-role-and-ai-assisted-development.md).
 > - All names, data and examples are sanitized or illustrative. No customer data, credentials or infrastructure details are published.
 
-**Start here:** [Magnetic Booking](docs/product/magnetic-booking.md) → [Traceability examples](docs/qa/traceability-examples.md) → [Regression case studies](docs/qa/regression-case-studies.md)
+**Start here:** [From V1 to V2](docs/product/evolution-v1-to-v2.md) → [Magnetic Booking](docs/product/magnetic-booking.md) → [Traceability examples](docs/qa/traceability-examples.md) → [Regression case studies](docs/qa/regression-case-studies.md)
 
 ---
 
@@ -35,7 +35,7 @@ I'm **Adriana Bucur**, a QA / Software Tester. I defined Timbra's product concep
 | **Live demo** | [Customer Booking](https://timbra-booking-demo.vercel.app/sv/booking) · [Admin Demo (read-only)](https://timbra-booking-demo.vercel.app/admin), with fictional data |
 | **What's interesting** | "Magnetic Booking": each free window shows only its edge times, which move inward as bookings are made, helping reduce unusable gaps |
 | **My role** | Product creator and QA owner: concept, requirements, business rules, QA strategy, risk analysis, test design and execution, regression analysis, validation |
-| **QA evidence** | [25 selected test cases](docs/qa/test-cases/README.md) · [Traceability examples](docs/qa/traceability-examples.md) · [5 regression case studies](docs/qa/regression-case-studies.md) · [Risk register](docs/qa/risk-register.md) |
+| **QA evidence** | [29 selected test cases](docs/qa/test-cases/README.md) · [Traceability examples](docs/qa/traceability-examples.md) · [5 regression case studies](docs/qa/regression-case-studies.md) · [Risk register](docs/qa/risk-register.md) |
 | **Testing** | 654 automated unit and domain-logic tests (including security guards), plus real-database integration tests and manual functional, visual and responsive testing |
 | **Stack (high level)** | Next.js · TypeScript · PostgreSQL (Supabase) · Vitest · Docker · Vercel · Git / GitHub |
 | **Status** | Working V2 pilot with a live demo for one salon, currently in development and stakeholder validation. Not a finished commercial SaaS product. |
@@ -48,36 +48,49 @@ Timbra V2's answer is **edge-only Magnetic Booking**: online customers are offer
 
 **Why it's hard to test:** correctness depends on exact time boundaries, daylight-saving transitions, simultaneous booking requests, and a ranking algorithm that must never change which times are valid.
 
-## How Timbra decides which times to offer
+## From V1 to V2
 
-*V1 design history, kept to show how the product evolved. In V2, the public page shows only the edge times of each free window; the eligibility rules below still apply.*
+| Step | What happened |
+|---|---|
+| **1. V1 idea** | Rank every valid time and recommend the best one, while the customer can still pick any valid time. |
+| **2. Salon owner feedback** | Online booking should fill the remaining gaps, not expose every free minute. A short treatment in the middle of a long free period ruins it for longer treatments. Fill free periods from their edges inward. |
+| **3. Product decision** | *Technically available ≠ offered.* Online customers see only the edge times of each free window; the salon owner keeps every valid time. Preparation 5 min, buffer 0, public booking window 2 calendar months. |
+| **4. V2 behaviour** | A new edge filter between eligibility and ranking. On the same demo day, customers went from eight times plus "Show more" (V1) to **10:10** and **15:10** (V2), then **11:15** and **15:10** after one booking. |
+| **5. Verification** | Automated tests (654 unit and domain-logic tests), a manual local walkthrough, and checks on the deployed demo. Validation of V2 by the salon owner is still planned. |
+
+The full story, with the before → after example and the evidence: **[From V1 to V2](docs/product/evolution-v1-to-v2.md)**
+
+## How Timbra decides which times to offer (V2)
 
 ```mermaid
 flowchart LR
     A["Candidate time slots"] --> B{"Eligibility<br/>Can this slot be booked?"}
-    B -- "No" --> X["Not offered"]
+    B -- "No" --> X["Never offered"]
     B -- "Yes" --> C["Valid time slots"]
-    C --> D["Ranking<br/>How good is this slot<br/>compared with the others?"]
-    D --> E["Recommended time"]
-    D --> F["All other valid times<br/>(still fully bookable)"]
+    C --> D{"Who is booking?"}
+    D -- "Online customer" --> E["V2 edge filter<br/>earliest + latest valid time<br/>of each free window"]
+    D -- "Salon owner" --> F["Every valid time"]
+    E --> R1["Ranking: order only<br/>first = recommended"]
+    F --> R2["Ranking: order only<br/>first = recommended"]
 ```
 
-- **Eligibility** answers *"Can this time slot be booked?"* It checks working hours, schedule exceptions, existing bookings (including preparation and cleanup time), minimum notice and whether the time is in the past.
-- **Ranking** answers *"How good is this valid slot compared with the other valid slots?"* It prefers times that leave fewer, larger free gaps.
-- **Recommendation** is only a suggestion. **Ranking changes the order of the valid times, never whether a time is valid.**
+- **Eligibility** answers *"Can this time slot be booked?"* It checks working hours, schedule exceptions, existing bookings (including preparation), minimum notice and whether the time is in the past.
+- **The V2 edge filter** answers *"Should an online customer be offered this eligible time?"* Only the earliest and latest valid time of each free window are offered, so bookings fill the day from both ends inward. The salon owner is not filtered.
+- **Ranking** answers *"How good is this time compared with the others?"* It only **orders** the times it receives and never removes one; the first is marked as recommended.
+- On submit, the server recalculates the offer for the same audience, so an online customer can't book an interior time by editing the request.
+
+The V1 design (eligibility → ranking, with every valid time shown to the customer) is kept as history in [Magnetic Booking](docs/product/magnetic-booking.md#v1-design-history). The screenshots below are from V1.
 
 ![Customer booking page showing 13:05 as the recommended time, with other valid times such as 09:05, 10:30 and 15:30 still available to choose](assets/screenshots/01-magnetic-booking-recommended-time.png)
 
-*Magnetic Booking: all valid times remain bookable. Timbra recommends the slot that best preserves an efficient calendar.*
-
-A valid time isn't automatically the recommended one. Here 09:05 is the earliest valid time, but 13:05 is recommended because it leaves a larger usable free block. 09:05 stays fully bookable.
+*Historical V1 screenshot: every valid time stayed bookable, and 13:05 was recommended because it left a larger usable free block. In V2, online customers see only the edge times of each free window.*
 
 ![Admin day view showing a 5-minute preparation segment, a booking from 13:00 to 13:50, and a 10-minute buffer segment](assets/screenshots/02-admin-day-view-prep-treatment-buffer.png)
 
-*Occupied interval: availability and collision checks include preparation + treatment + buffer, not only the customer-visible appointment.*
+*Historical V1 screenshot. Occupied interval: availability and collision checks include preparation + treatment + buffer, not only the customer-visible appointment. In the V2 pilot, the buffer is 0, so this booking would have no buffer segment.*
 <sub>The admin area is in Swedish: Förberedelse = preparation · Bokad = booked · Bekräftad = confirmed · Buffert / städning = buffer / cleanup. All data shown is fictional demo data.</sub>
 
-Full explanation with a worked example: **[Magnetic Booking](docs/product/magnetic-booking.md)**
+Full explanation with worked examples: **[Magnetic Booking](docs/product/magnetic-booking.md)**
 
 ## What I did as QA
 
@@ -93,7 +106,7 @@ Full explanation with a worked example: **[Magnetic Booking](docs/product/magnet
 
 | Topic | Documents |
 |---|---|
-| **Product** | [Product overview](docs/product/product-overview.md) · [Magnetic Booking](docs/product/magnetic-booking.md) · [Booking flow](docs/product/booking-flow.md) · [Architecture overview](docs/product/architecture-overview.md) |
+| **Product** | [From V1 to V2](docs/product/evolution-v1-to-v2.md) · [Product overview](docs/product/product-overview.md) · [Magnetic Booking](docs/product/magnetic-booking.md) · [Booking flow](docs/product/booking-flow.md) · [Architecture overview](docs/product/architecture-overview.md) |
 | **QA approach** | [Test Strategy](docs/qa/test-strategy.md) · [Test Plan](docs/qa/test-plan.md) · [Test types & approach](docs/qa/test-types-and-approach.md) · [Boundary & negative testing](docs/qa/boundary-and-negative-testing.md) |
 | **QA evidence** | [Test cases](docs/qa/test-cases/README.md) · [Risk Register](docs/qa/risk-register.md) · [Traceability examples](docs/qa/traceability-examples.md) · [Regression case studies](docs/qa/regression-case-studies.md) |
 | **Next steps** | [Known limitations & future QA](docs/qa/known-limitations-and-future-qa.md) · [Planned stakeholder usability session](docs/qa/stakeholder-usability-session.md) |

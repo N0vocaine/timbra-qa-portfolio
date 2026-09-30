@@ -15,14 +15,26 @@ The booking site works in **Swedish and English**.
 
 | Problem | Why it matters |
 |---|---|
-| Treatments have different lengths, plus preparation and cleanup time | A calendar treated as identical time blocks either double-books or wastes time |
+| Treatments have different lengths, and some need preparation (or cleanup) time | A calendar treated as identical time blocks either double-books or wastes time |
 | Awkwardly placed bookings leave small, unsellable gaps | Every unusable 15-minute fragment is lost revenue for a small business |
-| Customers dislike restricted choice | A system that hides valid times to "optimise" the calendar damages trust |
+| *V1 assumption:* customers dislike restricted choice | V1 assumed that hiding valid times would damage trust. For the pilot salon, the salon owner showed the opposite: offering every free time fragments her day. See [From V1 to V2](evolution-v1-to-v2.md). |
 | Booking by phone or message takes the owner's time | Time spent answering booking messages is time not spent with clients |
 
-Timbra's central idea, **Magnetic Booking**, addresses the first three together. It calculates every time that is genuinely bookable and then *recommends* the ones that keep the calendar efficient. It never hides or blocks the other valid times. See [Magnetic Booking](magnetic-booking.md).
+Timbra's central idea, **Magnetic Booking**, addresses the first two problems.
+- **V1:** it calculated every time that is genuinely bookable, *recommended* the ones that keep the calendar efficient, and kept every other valid time visible.
+- **V2 (the current pilot and demo):** online customers are offered only the edge times of each free window, while the salon owner keeps every valid time.
+
+See [Magnetic Booking](magnetic-booking.md) and [From V1 to V2](evolution-v1-to-v2.md).
 
 ## Main features (V1)
+
+*V2 changes:*
+- *public booking offers only edge times, with no "show more";*
+- *preparation is shown separately in the admin calendar;*
+- *the pilot uses no buffer;*
+- *customers and the admin have separate booking windows (2 calendar months / 365 days).*
+
+*See [From V1 to V2](evolution-v1-to-v2.md).*
 
 ### Customer booking
 - Bilingual booking flow (Swedish / English)
@@ -63,7 +75,7 @@ These rules were defined as product decisions. Each one became a testable requir
 | Back-to-back bookings | Allowed. One booking may start exactly when the previous one's occupied time ends. |
 | Split working days | A booking may never span a break between two working intervals |
 | Schedule exceptions | A date override **replaces** the weekly schedule for that date; the two are never merged |
-| Recommendation | A suggestion only. All valid times remain visible and bookable. |
+| Recommendation | A suggestion only; it never hides an offered time. V1: every valid time was offered to customers. V2: online customers are offered the edge times of each free window, and the admin every valid time. |
 | Minimum notice | Applies to customers. The admin may skip it for manual bookings. |
 | Past times | Can **never** be booked, by anyone, including the admin |
 | Cancellation cutoff | A customer can cancel only *strictly before* the cutoff. At the cutoff instant, cancellation is rejected. |
