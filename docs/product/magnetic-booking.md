@@ -2,14 +2,16 @@
 
 Magnetic Booking is the core product idea in Timbra: the booking logic protects the salon's calendar from unusable gaps. This page describes the **current V2 behaviour**, which the [live demo](https://timbra-booking-demo.vercel.app) runs, and keeps the **V1 design** as history. [From V1 to V2](evolution-v1-to-v2.md) explains why it changed.
 
-## Current behaviour (V2)
+## Current behaviour (V2, release v2.1.0)
+
+> **Since v2.1.0 (6 October 2026):** an online customer is offered the times next to existing bookings **plus the day's earliest and latest start** that still pass the notice-period check. Earlier V2 versions offered both edges of every free window (30 September screenshot below) and then only the booking-side edges. The refinement keeps a morning and an evening option on days with a single booking. Offered times are shown in time order with the recommended one marked.
 
 Three separate questions are answered, in this order:
 
 | Question | Name | Applies to | Result |
 |---|---|---|---|
 | *"Can this time slot be booked?"* | **Eligibility** | Everyone | Yes / No |
-| *"Should this eligible time be offered to an online customer?"* | **V2 edge filter** | Online customers only | Offered / not offered |
+| *"Should this eligible time be offered to an online customer?"* | **Public offer** | Online customers only | Offered / not offered |
 | *"How good is this time compared with the others?"* | **Ranking** | Everyone | An order |
 
 ```mermaid
@@ -18,20 +20,20 @@ flowchart LR
     B -- "No" --> X["Never offered"]
     B -- "Yes" --> C["Valid time slots"]
     C --> D{"Who is booking?"}
-    D -- "Online customer" --> E["V2 edge filter<br/>earliest + latest valid time<br/>of each free window"]
+    D -- "Online customer" --> E["Public offer<br/>times next to bookings<br/>+ day's earliest and latest<br/>eligible start"]
     D -- "Salon owner" --> F["Every valid time"]
     E --> R1["Ranking: order only<br/>first = recommended"]
     F --> R2["Ranking: order only<br/>first = recommended"]
 ```
 
-- **The V2 edge filter restricts** what online customers are offered: per free window, only the earliest and the latest valid start. After a booking, the window shrinks, so the offered times move inward.
+- **The public offer restricts** what online customers are offered: the times next to existing bookings and the day's earliest and latest eligible start. Breaks (for example a 13:00–14:00 lunch), opening and closing are not treated as bookings. As bookings are made, new times attach to them, so the day fills from both ends and around bookings.
 - **Ranking only orders.** It never adds or removes a time; the first one it returns is marked as recommended.
 - **Neither step can make an ineligible time bookable.** The server re-checks every booking against the same audience's rules, so a customer cannot book an interior time by editing the request.
 - **The salon owner keeps every valid time** in the admin area.
 
 ![Public booking page: Classic facial on 2026-10-01, with 11:20 recommended and 19:00, 09:05 and 09:25 as the other available times](../../assets/screenshots/07-v2-public-booking-two-free-windows.png)
 
-*Live demo, captured 30 September 2026. One existing booking (10:30–11:15, preparation from 10:25) splits the day into two free windows, 09:00–10:25 and 11:15–20:00. Each offers its own two edges (09:05 and 09:25; 11:20 and 19:00), and ranking only orders them (11:20 recommended).*
+*Live demo, captured 30 September 2026, before v2.1.0 (earlier rule and colours). One existing booking (10:30–11:15, preparation from 10:25) splits the day into two free windows, 09:00–10:25 and 11:15–20:00. Each offers its own two edges (09:05 and 09:25; 11:20 and 19:00), and ranking only orders them (11:20 recommended).*
 
 The full V2 flow (booking window, minimum notice, server re-check) and a before → after example are in [From V1 to V2](evolution-v1-to-v2.md#4-v2-behaviour).
 

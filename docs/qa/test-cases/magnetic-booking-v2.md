@@ -1,6 +1,6 @@
 # Test Cases: Magnetic Booking V2
 
-These cases cover the **V2 edge filter**: which eligible times an online customer is offered, and how the salon owner's view differs. Background: [From V1 to V2](../../product/evolution-v1-to-v2.md) and [Magnetic Booking](../../product/magnetic-booking.md).
+These cases cover the **public offer**: which eligible times an online customer is offered, and how the salon owner's view differs. MB2-005 to MB2-008 were added with release v2.1.0. Background: [From V1 to V2](../../product/evolution-v1-to-v2.md) and [Magnetic Booking](../../product/magnetic-booking.md).
 
 The **MB2-** cases are new for V2. They are not part of the original V1 catalogue, so their IDs start at 001.
 
@@ -73,6 +73,63 @@ The **MB2-** cases are new for V2. They are not part of the original V1 catalogu
 | Automation | Automated |
 | Evidence | Automated availability and admin submit tests. Not checked on the demo, because the demo's admin area is read-only. |
 
+### MB2-005: A single evening booking does not remove the morning option (v2.1.0)
+
+| Field | Value |
+|---|---|
+| Requirement | The public offer includes the day's earliest and latest eligible start in addition to the times next to bookings |
+| Risk | Customers lose the morning option on days with one late booking |
+| Priority | High |
+| Technique | Positive (one booking at the start / end / middle of the day) |
+| Level | Unit (pure availability pipeline) and integration (real database) |
+| Preconditions | Working hours 09:00–20:00; one booking occupying 18:35–20:00; 80-minute treatment, 5 minutes of preparation |
+| Steps | Calculate the public offer for that day |
+| Expected result | 09:05 (day's earliest start) and 17:15 (next to the booking) are offered; no time in the middle of the day |
+| Automation | Automated |
+| Evidence | Automated unit and real-database integration tests (release v2.1.0) |
+
+### MB2-006: Times are shown in time order with the recommended one marked (v2.1.0)
+
+| Field | Value |
+|---|---|
+| Requirement | All offered times are listed chronologically; the recommendation comes from ranking, not from the list position |
+| Risk | The recommended time moves the list out of order, or the badge lands on the wrong time |
+| Priority | Medium |
+| Technique | Positive |
+| Level | Unit (presentation) and manual (demo and production, Swedish and English) |
+| Steps | Open a day where the recommended time is not the earliest |
+| Expected result | Times in time order; the badge "Rekommenderad"/"Recommended" on the ranked time |
+| Automation | Automated + manual |
+| Evidence | Automated presentation tests; manual checks on the demo and production after the v2.1.0 deployment |
+
+### MB2-007: No booking overlaps the daily break (v2.1.0)
+
+| Field | Value |
+|---|---|
+| Requirement | Working days have a 13:00–14:00 break; preparation and treatment may not overlap it |
+| Risk | A booking or its preparation runs into the break |
+| Priority | High |
+| Technique | Boundary value analysis |
+| Level | Unit |
+| Steps | Calculate customer and salon-owner times for 25-, 30-, 55- and 80-minute treatments |
+| Expected result | A booking may end exactly at 13:00 and preparation may start exactly at 14:00; for 25 minutes, 12:35 and 14:05 are offered while 12:40, 13:00, 13:30, 13:55 and 14:00 are not |
+| Automation | Automated |
+| Evidence | Automated boundary tests; live offers on the demo and production contain no time inside the break |
+
+### MB2-008: "Back to booking" from every state of the booking-management page (v2.1.0)
+
+| Field | Value |
+|---|---|
+| Requirement | A "Tillbaka till bokning" / "Back to booking" link on every state of the management page, to the booking page in the same language |
+| Risk | Customers get stuck; the link leaks the management token or changes the booking |
+| Priority | Medium |
+| Technique | Positive (every page state) |
+| Level | Unit and manual |
+| Steps | Open the page with an active, cancelled, refused, missing or invalid link and follow the link |
+| Expected result | The link is always present, points to /sv/booking or /en/booking without any token, and the booking is unchanged |
+| Automation | Automated + manual |
+| Evidence | Automated tests; manual checks locally (all states) and on the demo and production (link present, privacy headers) |
+
 ---
 
-Results: these cases are part of the automated unit and domain-logic suite that passed (654 tests) on 29 September 2026. See [From V1 to V2: Verification](../../product/evolution-v1-to-v2.md#6-verification).
+Results: MB2-001 to MB2-004 are part of the automated unit and domain-logic suite that passed (654 tests) on 29 September 2026. MB2-005 to MB2-008 belong to release v2.1.0, whose full suite (1,118 automated tests including real-database integration tests on an isolated test database) passed on 6 October 2026. See [From V1 to V2: Verification](../../product/evolution-v1-to-v2.md#6-verification).

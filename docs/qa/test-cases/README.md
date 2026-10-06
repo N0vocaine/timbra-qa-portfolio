@@ -1,6 +1,6 @@
 # Test Case Catalogue (Selected)
 
-The full private catalogue has more than 100 scenario-level test cases. This portfolio shows **25 representative V1 cases**, chosen to show the range of risks, techniques and test levels in Timbra. The original case IDs are kept, so gaps in the numbering are expected. **4 V2 cases** (MB2-) were added for the V2 edge filter, bringing the total to 29.
+The full private catalogue has more than 100 scenario-level test cases. This portfolio shows **25 representative V1 cases**, chosen to show the range of risks, techniques and test levels in Timbra. The original case IDs are kept, so gaps in the numbering are expected. **8 V2 cases** (MB2-) were added for the V2 public offer: 4 for the first V2 version and 4 for release v2.1.0, bringing the total to 33.
 
 ## Selected cases
 
@@ -8,11 +8,11 @@ The full private catalogue has more than 100 scenario-level test cases. This por
 |---|---|---|
 | [Booking engine](booking-engine.md) | 10 | Four timestamps, occupied intervals, adjacency, split days, schedule overrides, lead time, collisions, concurrency, customer vs admin |
 | [Magnetic ranking](magnetic-ranking.md) | 4 | Ranking rules, recommendation never hides an offered time, ranking never changes eligibility |
-| [Magnetic Booking V2](magnetic-booking-v2.md) | 4 | Edge-only public offer, interior time rejected on submit, edges move inward after a booking, admin keeps every valid time |
+| [Magnetic Booking V2](magnetic-booking-v2.md) | 8 | Public offer (edges, interior time rejected on submit, times move inward, admin keeps every valid time); v2.1.0: morning option kept, chronological display, daily break boundaries, Back to booking |
 | [Timezone / DST](timezone-dst.md) | 3 | Non-existent and ambiguous local times, cutoff across DST |
 | [Cancellation](cancellation.md) | 4 | Before / at / after the cutoff, slot released after cancellation |
 | [Authentication & security](auth-and-security.md) | 4 | Unauthenticated, unauthorized, fail-closed configuration, every admin action protected |
-| **Total** | **29** | |
+| **Total** | **33** | |
 
 ## Case format
 
@@ -41,26 +41,26 @@ The full private catalogue has more than 100 scenario-level test cases. This por
 
 | Technique | Count |
 |---|---|
-| Positive | 10 |
+| Positive | 13 |
 | Negative | 9 |
-| Boundary | 6 |
+| Boundary | 7 |
 | Concurrency | 1 |
 | Configuration / fail-closed | 1 |
 | Structural (static guard) | 1 |
 | Property / invariant | 1 |
-| **Total** | **29** |
+| **Total** | **33** |
 
 | Primary level | Count |
 |---|---|
-| Unit / domain logic | 21 |
+| Unit / domain logic | 25 |
 | DB integration (real local PostgreSQL) | 6 |
 | Auth integration | 1 |
 | Static guard | 1 |
-| **Total** | **29** |
+| **Total** | **33** |
 
 *Counts use each case's primary technique and level. Several cases combine more than one: for example, MAG-004 also has a manual browser check, ADM-007 has both unit and integration coverage, and MB2-003 also has a manual walkthrough and a demo check.*
 
-All 29 selected cases have automated coverage. Areas that depend on **manual** testing (the full browser journey, calendar appearance, responsive layout) are described in [Test types & approach](../test-types-and-approach.md) and the [Test Plan](../test-plan.md).
+All 33 selected cases have automated coverage. Areas that depend on **manual** testing (the full browser journey, calendar appearance, responsive layout) are described in [Test types & approach](../test-types-and-approach.md) and the [Test Plan](../test-plan.md).
 
 ## Related
 

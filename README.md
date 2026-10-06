@@ -33,18 +33,18 @@ I'm **Adriana Bucur**, a QA / Software Tester. I defined Timbra's product concep
 |---|---|
 | **Product** | Online booking for a salon: customers book treatments; the salon owner manages treatments, working hours and bookings |
 | **Live demo** | [Customer Booking](https://timbra-booking-demo.vercel.app/sv/booking) · [Admin Demo (read-only)](https://timbra-booking-demo.vercel.app/admin), with fictional data |
-| **What's interesting** | "Magnetic Booking": each free window shows only its edge times, which move inward as bookings are made, helping reduce unusable gaps |
+| **What's interesting** | "Magnetic Booking": online customers are offered times next to existing bookings plus the day's earliest and latest start, so the day fills from both ends and around bookings instead of leaving unusable gaps |
 | **My role** | Product creator and QA owner: concept, requirements, business rules, QA strategy, risk analysis, test design and execution, regression analysis, validation |
-| **QA evidence** | [29 selected test cases](docs/qa/test-cases/README.md) · [Traceability examples](docs/qa/traceability-examples.md) · [5 regression case studies](docs/qa/regression-case-studies.md) · [Risk register](docs/qa/risk-register.md) |
-| **Testing** | 654 automated unit and domain-logic tests (including security guards), plus real-database integration tests and manual functional, visual and responsive testing |
+| **QA evidence** | [33 selected test cases](docs/qa/test-cases/README.md) · [Traceability examples](docs/qa/traceability-examples.md) · [5 regression case studies](docs/qa/regression-case-studies.md) · [Risk register](docs/qa/risk-register.md) |
+| **Testing** | 1,118 automated tests for release v2.1.0 (unit, domain logic, security guards and real-database integration tests, run on an isolated test database), plus manual functional, visual, accessibility and responsive testing |
 | **Stack (high level)** | Next.js · TypeScript · PostgreSQL (Supabase) · Vitest · Docker · Vercel · Git / GitHub |
-| **Status** | Working V2 pilot with a live demo for one salon, currently in development and stakeholder validation. Not a finished commercial SaaS product. |
+| **Status** | V2 pilot for one salon; release **v2.1.0** (6 October 2026) is live in production and in the demo. Validation by the salon owner is still pending. Not a finished commercial SaaS product. |
 
 ## The problem
 
 A salon's day isn't made of identical one-hour blocks. Treatments have different lengths, and some need **preparation time** before the customer arrives. If bookings land in awkward places, for example a short treatment in the middle of a long free period, the day fills up with small gaps that are too short to sell, and that time is lost.
 
-Timbra V2's answer is **edge-only Magnetic Booking**: online customers are offered only the times at the edges of each free window, and those times move inward as bookings fill the day. The salon owner can still book any valid time.
+Timbra V2's answer is **Magnetic Booking**: online customers are offered only a few well-placed times: the times next to existing bookings and the day's earliest and latest possible start. Bookings therefore attach to each other and fill the day from both ends inward. The salon owner can still book any valid time.
 
 **Why it's hard to test:** correctness depends on exact time boundaries, daylight-saving transitions, simultaneous booking requests, and a ranking algorithm that must never change which times are valid.
 
@@ -57,6 +57,7 @@ Timbra V2's answer is **edge-only Magnetic Booking**: online customers are offer
 | **3. Product decision** | *Technically available ≠ offered.* Online customers see only the edge times of each free window; the salon owner keeps every valid time. Preparation 5 min, buffer 0, public booking window 2 calendar months. |
 | **4. V2 behaviour** | A new edge filter between eligibility and ranking. On the same demo day, customers went from eight times plus "Show more" (V1) to **10:10** and **15:10** (V2), then **11:15** and **15:10** after one booking. |
 | **5. Verification** | Automated tests (654 unit and domain-logic tests), a manual local walkthrough, and checks on the deployed demo. Validation of V2 by the salon owner is still planned. |
+| **6. Refinements (v2.1.0)** | After testing, the rule became *times next to bookings + the day's earliest and latest eligible start*, so an evening booking no longer removes the morning option. Times are listed in time order with the recommended one marked. Also: a daily 13:00–14:00 break, a black/pink salon theme, and a "Back to booking" link on the booking-management page. |
 
 The full story, with the before → after example and the evidence: **[From V1 to V2](docs/product/evolution-v1-to-v2.md)**
 
@@ -68,18 +69,20 @@ flowchart LR
     B -- "No" --> X["Never offered"]
     B -- "Yes" --> C["Valid time slots"]
     C --> D{"Who is booking?"}
-    D -- "Online customer" --> E["V2 edge filter<br/>earliest + latest valid time<br/>of each free window"]
+    D -- "Online customer" --> E["Public offer<br/>times next to bookings<br/>+ day's earliest and latest<br/>eligible start"]
     D -- "Salon owner" --> F["Every valid time"]
     E --> R1["Ranking: order only<br/>first = recommended"]
     F --> R2["Ranking: order only<br/>first = recommended"]
 ```
 
 - **Eligibility** answers *"Can this time slot be booked?"* It checks working hours, schedule exceptions, existing bookings (including preparation), minimum notice and whether the time is in the past.
-- **The V2 edge filter** answers *"Should an online customer be offered this eligible time?"* Only the earliest and latest valid time of each free window are offered, so bookings fill the day from both ends inward. The salon owner is not filtered.
-- **Ranking** answers *"How good is this time compared with the others?"* It only **orders** the times it receives and never removes one; the first is marked as recommended.
+- **The public offer** answers *"Should an online customer be offered this eligible time?"* Since v2.1.0 it is the times next to existing bookings plus the day's earliest and latest start that still pass the notice-period check. Breaks (such as lunch), opening and closing are not treated as bookings. The salon owner is not filtered.
+- **Ranking** answers *"How good is this time compared with the others?"* It only **orders** the times it receives and never removes one; the best one is marked as recommended. The customer sees all offered times in time order, with the recommended one marked.
 - On submit, the server recalculates the offer for the same audience, so an online customer can't book an interior time by editing the request.
 
 ### V2 in the live demo
+
+*The screenshots below were captured on 30 September 2026, before the v2.1.0 refinements. They show the earlier rule (both edges of every free window) and the earlier colours. The [live demo](https://timbra-booking-demo.vercel.app/sv/booking) shows the current behaviour.*
 
 ![Public booking page: Classic facial on 2026-10-06, with 10:10 as the recommended time and 15:10 as the only other available time](assets/screenshots/06-v2-public-booking-edge-times.png)
 
@@ -109,6 +112,15 @@ The V1 design (eligibility → ranking, with every valid time shown to the custo
 <sub>The admin area is in Swedish: Förberedelse = preparation · Bokad = booked · Bekräftad = confirmed · Buffert / städning = buffer / cleanup. All data shown is fictional demo data.</sub>
 
 Full explanation with worked examples: **[Magnetic Booking](docs/product/magnetic-booking.md)**
+
+## Release v2.1.0 (6 October 2026)
+
+| | |
+|---|---|
+| **Behaviour** | Times next to bookings + the day's earliest/latest eligible start, shown in time order with the recommended time marked · daily break 13:00–14:00 on working days (no preparation or treatment may overlap it; a booking may end at 13:00, preparation may start at 14:00) · "Back to booking" on every state of the booking-management page · black/pink salon theme, with booking statuses shown by icon or text as well as colour |
+| **How it was verified** | 1,118 automated tests including real-database integration tests on an isolated test database (never on review or production data) · code review before the release candidate · a tested release candidate deployed to the demo first, then the final release to production · read-only checks on both sites in Swedish and English (offered times, break boundaries, theme, Back to booking, privacy headers) · deployed versions confirmed on the hosting platform |
+| **Release practice** | Semantic versioning with a tested release candidate (v2.1.0-rc.1) and a final tag created only after the production deployment was verified; no database migrations in this release; the lunch break was applied as configuration, without moving or cancelling existing bookings |
+| **Still open** | Validation by the salon owner · preparation label on short calendar cards · wording of one cancellation message for bookings that have already started |
 
 ## What I did as QA
 
