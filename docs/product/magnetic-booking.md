@@ -4,7 +4,7 @@ Magnetic Booking is the core product idea in Timbra: the booking logic protects 
 
 ## Current behaviour (V2, release v2.1.0)
 
-> **Since v2.1.0 (6 October 2026):** an online customer is offered the times next to existing bookings **plus the day's earliest and latest start** that still pass the notice-period check. Earlier V2 versions offered both edges of every free window (30 September screenshot below) and then only the booking-side edges. The refinement keeps a morning and an evening option on days with a single booking. Offered times are shown in time order with the recommended one marked.
+> **Since v2.1.0 (6 October 2026):** an online customer is offered, for each free window, the time next to an existing booking (or both edges of a window that has no booking on either side), **plus the day's earliest and latest start** that still pass the notice-period check. The first V2 offered both edges of every free window (30 September screenshot below); from 30 September only the booking-side edge was offered next to a booking. The day extremes keep a morning and an evening option on days with a single booking. Offered times are shown in time order with the recommended one marked.
 
 Three separate questions are answered, in this order:
 
@@ -20,20 +20,20 @@ flowchart LR
     B -- "No" --> X["Never offered"]
     B -- "Yes" --> C["Valid time slots"]
     C --> D{"Who is booking?"}
-    D -- "Online customer" --> E["Public offer<br/>times next to bookings<br/>+ day's earliest and latest<br/>eligible start"]
+    D -- "Online customer" --> E["Public offer<br/>times next to bookings<br/>+ both edges of windows with no booking<br/>+ day's earliest and latest start"]
     D -- "Salon owner" --> F["Every valid time"]
     E --> R1["Ranking: order only<br/>first = recommended"]
     F --> R2["Ranking: order only<br/>first = recommended"]
 ```
 
-- **The public offer restricts** what online customers are offered: the times next to existing bookings and the day's earliest and latest eligible start. Breaks (for example a 13:00–14:00 lunch), opening and closing are not treated as bookings. As bookings are made, new times attach to them, so the day fills from both ends and around bookings.
+- **The public offer restricts** what online customers are offered: the times next to existing bookings, both edges of a window that has no booking on either side, and the day's earliest and latest eligible start. Breaks (for example a 13:00–14:00 lunch), opening and closing are not treated as bookings: next to a booking, only the booking-side time is offered. As bookings are made, new times attach to them, so the day fills from both ends and around bookings.
 - **Ranking only orders.** It never adds or removes a time; the first one it returns is marked as recommended.
 - **Neither step can make an ineligible time bookable.** The server re-checks every booking against the same audience's rules, so a customer cannot book an interior time by editing the request.
 - **The salon owner keeps every valid time** in the admin area.
 
-![Public booking page: Classic facial on 2026-10-01, with 11:20 recommended and 19:00, 09:05 and 09:25 as the other available times](../../assets/screenshots/07-v2-public-booking-two-free-windows.png)
+![Public booking page for Classic facial, week of 20 October 2026: Tuesday and Wednesday offer 09:05 (recommended), 12:00, 14:05 and 16:00; Thursday offers 09:05, 12:00, 14:05 (recommended) and 19:00](../../assets/screenshots/09-v2.1.0-public-booking-week-2026-10-20.jpg)
 
-*Live demo, captured 30 September 2026, before v2.1.0 (earlier rule and colours). One existing booking (10:30–11:15, preparation from 10:25) splits the day into two free windows, 09:00–10:25 and 11:15–20:00. Each offers its own two edges (09:05 and 09:25; 11:20 and 19:00), and ranking only orders them (11:20 recommended).*
+*Scrolled view of the public demo, captured 7 October 2026 (v2.1.0); the demo's fictional-data notice sits just above the visible area. "Classic facial" (60 min, 5 min preparation), days from 20 October 2026, which have no bookings according to the read-only admin. Each day is split by the 13:00–14:00 break into two windows with no booking, and each window offers its earliest and latest start (09:05 and 12:00; 14:05 and 16:00, or 19:00 on Thursday's longer day). Times are listed in time order; the recommended time comes from ranking. On that date the demo had no bookings on any selectable future day, so the time next to an existing booking could not be shown live; it is covered by automated tests ([MB2-003, MB2-005](../qa/test-cases/magnetic-booking-v2.md)).*
 
 The full V2 flow (booking window, minimum notice, server re-check) and a before → after example are in [From V1 to V2](evolution-v1-to-v2.md#4-v2-behaviour).
 
@@ -82,7 +82,11 @@ occupied end     ─┘
 
 **Collision and availability checks always use the occupied interval (09:55–11:05), never only the customer-visible interval (10:00–10:55).** This was one of the highest-risk rules to test. If it is wrong, two bookings look fine to customers but overlap in the real calendar.
 
-**In the application:** the admin Day view shows the occupied interval directly. This demo booking (Microneedling: preparation 5 min, treatment 50 min, buffer 10 min) blocks 12:55–14:00, while the customer's appointment is 13:00–13:50.
+#### History: V1 screenshot
+
+Captured from a local development environment with fictional data during V1. Kept as history; it is not the current interface.
+
+**In the application (V1):** the admin Day view shows the occupied interval directly. This demo booking (Microneedling: preparation 5 min, treatment 50 min, buffer 10 min) blocks 12:55–14:00, while the customer's appointment is 13:00–13:50.
 
 ![Admin day view showing a 5-minute preparation segment, a booking from 13:00 to 13:50, and a 10-minute buffer segment](../../assets/screenshots/02-admin-day-view-prep-treatment-buffer.png)
 
@@ -137,7 +141,7 @@ The salon is open 09:00–12:00, and an existing booking occupies 10:00–10:30.
 
 **09:00 is recommended**, because it keeps the remaining time usable. In V1, the customer could still choose 09:15 or any other valid time.
 
-**In V2**, the same day has two free windows: 09:00–10:00 and 10:30–12:00. An online customer is offered only their edges: **09:00, 09:30, 10:30 and 11:30**. 09:15 is not offered, because it would split the first window. Ranking then orders those four times. The salon owner can still book 09:15.
+**In V2 (v2.1.0)**, the same day has two free windows: 09:00–10:00 and 10:30–12:00. An online customer is offered **09:30 and 10:30** (next to the booking) and **09:00 and 11:30** (the day's earliest and latest start). 09:15 is not offered, because it would split the first window. Ranking then orders those four times. The salon owner can still book 09:15.
 
 ## 4. The rules that tie it together
 
@@ -145,12 +149,16 @@ The salon is open 09:00–12:00, and an existing booking occupies 10:00–10:30.
 
 - A slot that is not eligible can never become bookable by ranking well.
 - An eligible slot can never become unbookable by ranking poorly.
-- The recommendation never hides or disables another **offered** time. In V1 every valid time was offered to the customer; in V2 the customer is offered the edge times, and the salon owner every valid time.
-- **V2:** the edge filter only ever removes times from the public offer. It never adds a time that isn't eligible.
+- The recommendation never hides or disables another **offered** time. In V1 every valid time was offered to the customer; in V2 the customer is offered the public offer described above, and the salon owner every valid time.
+- **V2:** the public offer only ever selects from eligible times. It never adds a time that isn't eligible.
 
 These guarantees are tested as requirements in their own right: see [MAG-004 and MAG-005](../qa/test-cases/magnetic-ranking.md) and the [V2 test cases](../qa/test-cases/magnetic-booking-v2.md).
 
-**In the application (V1, historical):** an 80-minute treatment (95 minutes occupied) on a split Wednesday, 09:00–12:00 and 13:00–17:00, with no other bookings. The best candidates each sit flush against one edge of a working period, leaving one free fragment, so rule 1 ties between them. **13:05 wins**. Rule 2 prefers the afternoon options, which leave a larger remaining free block in the longer afternoon period. Rule 3 then picks the earliest of those. The earliest valid time, **09:05**, is not recommended, but it is still offered with all the other valid times.
+#### History: V1 screenshot
+
+Captured from a local development environment with fictional data during V1. Kept as history; it is not the current interface.
+
+**In the application (V1):** an 80-minute treatment (95 minutes occupied) on a split Wednesday, 09:00–12:00 and 13:00–17:00, with no other bookings. The best candidates each sit flush against one edge of a working period, leaving one free fragment, so rule 1 ties between them. **13:05 wins**. Rule 2 prefers the afternoon options, which leave a larger remaining free block in the longer afternoon period. Rule 3 then picks the earliest of those. The earliest valid time, **09:05**, is not recommended, but it is still offered with all the other valid times.
 
 ![Customer booking page showing 13:05 as the recommended time, with other valid times such as 09:05, 10:30 and 15:30 still available to choose](../../assets/screenshots/01-magnetic-booking-recommended-time.png)
 

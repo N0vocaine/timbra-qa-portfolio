@@ -51,10 +51,10 @@ flowchart LR
 
 | Step | Content |
 |---|---|
-| **Requirement** | REQ-CAN-003 / REQ-TZ-005: customers can cancel strictly before the cutoff, measured in real elapsed time |
+| **Requirement** | REQ-CAN-003 / REQ-TZ-005: customers can cancel while at least the cutoff time remains (V1: strictly before the cutoff), measured in real elapsed time |
 | **Risk** | A valid cancellation is rejected, or a late one accepted (High); a wrong result around a DST change (RISK-002, Critical) |
 | **Scenarios** | One minute before · exactly at · after the cutoff · a cutoff window that crosses a DST change |
-| **Test cases** | [CAN-003](test-cases/cancellation.md#can-003-cancellation-allowed-strictly-before-the-cutoff), [CAN-004](test-cases/cancellation.md#can-004-cancellation-rejected-at-the-exact-cutoff-instant), [CAN-005](test-cases/cancellation.md#can-005-cancellation-rejected-after-the-cutoff), [TZ-007](test-cases/timezone-dst.md#tz-007-the-cancellation-cutoff-stays-correct-across-a-dst-change) |
+| **Test cases** | [CAN-003](test-cases/cancellation.md#can-003-cancellation-allowed-before-the-cutoff), [CAN-004](test-cases/cancellation.md#can-004-cancellation-at-the-exact-cutoff-instant), [CAN-005](test-cases/cancellation.md#can-005-cancellation-rejected-after-the-cutoff), [TZ-007](test-cases/timezone-dst.md#tz-007-the-cancellation-cutoff-stays-correct-across-a-dst-change) |
 | **Tests** | Pure boundary tests with an injected current time; real-database cancellation tests |
 | **Evidence** | Automated |
 | **Coverage** | **Covered** |

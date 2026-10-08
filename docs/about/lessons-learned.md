@@ -4,7 +4,7 @@
 
 1. **Separate "is it allowed?" from "is it good?"** Keeping eligibility and ranking apart meant each could be tested in isolation. It also let the most important guarantee be stated as a single testable invariant: *ranking never changes eligibility.*
 
-2. **Boundaries deserve their own test cases.** Minimum notice *includes* its boundary; the cancellation cutoff *excludes* it. Only explicit tests at the exact instant catch an off-by-one in either direction.
+2. **Boundaries deserve their own test cases.** Minimum notice *includes* its boundary; in V1 the cancellation cutoff *excluded* it, and V2 deliberately changed that. Only explicit tests at the exact instant catch an off-by-one in either direction, and they make a deliberate rule change visible too.
 
 3. **Make time an input.** Passing the current time into the logic, instead of reading the clock inside it, is what made exact boundary and daylight-saving tests possible and repeatable.
 

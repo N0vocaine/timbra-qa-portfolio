@@ -1,21 +1,24 @@
 # Test Cases: Cancellation
 
-Customers cancel through a **private manage link**, with no account needed. Cancellation is allowed only **strictly before** a configurable cutoff (24 hours in V1).
+Customers cancel through a **private manage link**, with no account needed. Cancellation is allowed up to a configurable cutoff (24 hours).
+
+**Rule change in V2.** V1 allowed cancellation only *strictly before* the cutoff. Since the first V2 production release (30 September 2026), cancellation is allowed while **at least** the cutoff time remains, so cancelling **exactly at** the cutoff instant is allowed and one millisecond later is not. The cases below describe the current rule; the V1 expectation is noted where it differs.
 
 **Illustrative setup:** appointment on Friday at **15:00**, cutoff 24 hours, so the cutoff instant is **Thursday 15:00**. The current time is injected in each case.
 
 | Attempt (Thursday) | 14:59 | **15:00** | 16:00 |
 |---|---|---|---|
-| Expected | Allowed | **Rejected** | Rejected |
+| Expected (current) | Allowed | **Allowed** | Rejected |
+| Expected (V1) | Allowed | Rejected | Rejected |
 | Case | CAN-003 | CAN-004 | CAN-005 |
 
 ---
 
-### CAN-003: Cancellation allowed strictly before the cutoff
+### CAN-003: Cancellation allowed before the cutoff
 
 | Field | Value |
 |---|---|
-| Requirement | REQ-CAN-003: cancellation is allowed strictly before the cutoff and rejected at or after it |
+| Requirement | REQ-CAN-003: cancellation is allowed while at least the cutoff time remains (up to and including the cutoff instant) and rejected after it. V1: strictly before the cutoff. |
 | Risk | A legitimate cancellation is rejected, so the customer must phone and the slot stays blocked |
 | Priority | High |
 | Technique | Boundary (valid side) |
@@ -27,19 +30,19 @@ Customers cancel through a **private manage link**, with no account needed. Canc
 | Automation | Automated |
 | Evidence | Automated domain-logic test (cutoff rule) and real-database integration test (cancellation) |
 
-### CAN-004: Cancellation rejected at the exact cutoff instant
+### CAN-004: Cancellation at the exact cutoff instant
 
 | Field | Value |
 |---|---|
 | Requirement | REQ-CAN-003 |
-| Risk | Late cancellation accepted, which leaves the salon an unfillable gap |
+| Risk | The boundary instant handled differently from the rule (an off-by-one in either direction) |
 | Priority | High |
 | Technique | Boundary (the boundary value itself) |
 | Level | Domain logic |
 | Preconditions | Same as CAN-003 |
 | Test data | Current time **exactly Thursday 15:00:00.000** |
 | Steps | 1. Evaluate whether the booking is still cancellable |
-| Expected result | **Rejected.** "Strictly before" means the boundary instant itself is not allowed. |
+| Expected result | **Allowed** (current rule: exactly 24 hours remaining is enough). One millisecond later is rejected. V1 expected **Rejected** here, because V1 allowed cancellation only strictly before the cutoff. |
 | Automation | Automated |
 | Evidence | Automated domain-logic test (cutoff rule) |
 | Notes | Off-by-one errors at exact boundaries are among the most common defects in time-based rules, which is why the boundary value gets its own case |
@@ -61,7 +64,11 @@ Customers cancel through a **private manage link**, with no account needed. Canc
 | Evidence | Automated real-database integration test (cancellation) |
 | Notes | The database re-checks the cutoff itself. Hiding the cancel button on the page is only a convenience, not the security boundary. |
 
-**Seen in the application (CAN-005, after the cutoff):** the customer's manage page for a *Confirmed* demo booking whose cutoff has already passed. The cancel option isn't offered, and the customer is told to contact the salon. This shows the **after-cutoff** state only. The exact boundary instant (CAN-004) is verified by automated tests with an injected clock.
+#### History: V1 screenshot
+
+Captured from a local development environment with fictional data during V1. Kept as history; it is not the current interface. The current page uses different wording.
+
+**Seen in the application (CAN-005, after the cutoff, V1):** the customer's manage page for a *Confirmed* demo booking whose cutoff has already passed. The cancel option isn't offered, and the customer is told to contact the salon. This shows the **after-cutoff** state only. The exact boundary instant (CAN-004) is verified by automated tests with an injected clock.
 
 ![Manage-booking page, cropped to the status row showing Confirmed and the message that the booking can no longer be cancelled online](../../../assets/screenshots/05-boundary-cancellation-after-cutoff.png)
 

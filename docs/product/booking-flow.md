@@ -41,8 +41,8 @@ flowchart TD
     K -- "No / unknown" --> N["Generic 'not found'<br/>(same response for malformed and unknown links)"]
     K -- "Yes" --> S{"Booking status<br/>still Confirmed?"}
     S -- "No" --> X["Cannot be cancelled"]
-    S -- "Yes" --> C{"Strictly before<br/>the cancellation cutoff?"}
-    C -- "No (at or after cutoff)" --> Z["Rejected: contact the salon"]
+    S -- "Yes" --> C{"At least the cutoff time<br/>still remaining?"}
+    C -- "No (after the cutoff)" --> Z["Rejected: contact the salon"]
     C -- "Yes" --> OK["Booking cancelled<br/>time is immediately free again"]
 ```
 
@@ -51,7 +51,8 @@ The cutoff check is a classic **boundary** test. With a 24-hour cutoff and an ap
 | When the customer tries to cancel | Result |
 |---|---|
 | Previous day, 14:59 | Allowed |
-| Previous day, **exactly 15:00** | **Rejected** (the boundary itself is not allowed) |
+| Previous day, **exactly 15:00** | **Allowed** (the boundary itself is allowed; V1 rejected it) |
+| Previous day, 15:00 and one second | Rejected |
 | Previous day, 16:00 | Rejected |
 
 ## 3. Admin journey
@@ -81,11 +82,25 @@ flowchart TD
 | **Past times** | Never bookable | **Never bookable** (the admin exception covers notice only) |
 | Customer notifications | Created | **Not created** |
 
-**What the admin sees:** the Day view shows each booking's full occupied time, meaning preparation, the appointment itself and buffer. This is the same interval the availability and collision rules use.
+**Current admin calendar (public demo, captured 7 October 2026 at desktop width).** The demo's admin area is read-only. The dates shown are past days with existing fictional bookings; they are not selectable in the customer flow.
+
+![Admin day view for Tuesday 6 October 2026 in the read-only demo: a booking 09:05–10:05 with preparation 09:00–09:05, free time, the 13:00–14:00 break shown as closed, free time, and a booking 16:15–17:00 with preparation 16:10–16:15](../../assets/screenshots/11-v2.1.0-admin-day-2026-10-06.jpg)
+
+*Day view, 6 October 2026: each booking card shows its customer time and its preparation range (Förberedelsetid), with a hatched 5-minute strip above it. There is no buffer after a treatment. The 13:00–14:00 break appears as "Stängt / ej tillgänglig" (closed / unavailable). Customer names are masked in the demo.*
+
+![Admin week view for week 41, 5–11 October 2026, in the read-only demo: bookings on Monday and Tuesday, the 13:00–14:00 break on Monday to Thursday, Friday and Sunday closed, Saturday open 10:00–13:00, Thursday open until 20:00](../../assets/screenshots/12-v2.1.0-admin-week-2026-10-05.jpg)
+
+*Week view, week 41 (5–11 October 2026): the three bookings of that week on Monday and Tuesday, each with its hatched preparation strip; the 13:00–14:00 break on Monday to Thursday; Friday and Sunday closed; Saturday open 10:00–13:00; Thursday open until 20:00. Captured on 7 October, so the page marks it as the current week ("Denna vecka").*
+
+#### History: V1 screenshot
+
+Captured from a local development environment with fictional data during V1. Kept as history; it is not the current interface.
+
+**What the admin saw in V1:** the Day view shows each booking's full occupied time, meaning preparation, the appointment itself and buffer. This is the same interval the availability and collision rules use.
 
 ![Admin day view showing a 5-minute preparation segment, a booking from 13:00 to 13:50, and a 10-minute buffer segment](../../assets/screenshots/02-admin-day-view-prep-treatment-buffer.png)
 
-*Occupied interval: availability and collision checks include preparation + treatment + buffer, not only the customer-visible appointment.* <sub>Swedish labels: Förberedelse = preparation · Bokad = booked · Buffert / städning = buffer / cleanup. Fictional demo data.</sub>
+*V1: availability and collision checks include preparation + treatment + buffer, not only the customer-visible appointment. The V2 pilot uses no buffer (compare the current day view above).* <sub>Swedish labels: Förberedelse = preparation · Bokad = booked · Buffert / städning = buffer / cleanup. Fictional demo data.</sub>
 
 ## 4. Booking lifecycle
 
@@ -94,7 +109,7 @@ stateDiagram-v2
     [*] --> Confirmed: booking created
     Confirmed --> Completed: admin marks completed
     Confirmed --> NoShow: admin marks no-show
-    Confirmed --> Cancelled: admin cancels, or customer cancels before cutoff
+    Confirmed --> Cancelled: admin cancels, or customer cancels up to the cutoff
     Completed --> [*]
     NoShow --> [*]
     Cancelled --> [*]

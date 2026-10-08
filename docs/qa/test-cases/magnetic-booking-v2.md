@@ -2,6 +2,8 @@
 
 These cases cover the **public offer**: which eligible times an online customer is offered, and how the salon owner's view differs. MB2-005 to MB2-008 were added with release v2.1.0. Background: [From V1 to V2](../../product/evolution-v1-to-v2.md) and [Magnetic Booking](../../product/magnetic-booking.md).
 
+MB2-001 to MB2-004 were written for the first V2 rule (both edges of every free window). In their scenarios (a single free window, or one window between two bookings) the current rule gives the same expected times (booking-anchored edges plus the day's earliest and latest start; see [Magnetic Booking](../../product/magnetic-booking.md)).
+
 The **MB2-** cases are new for V2. They are not part of the original V1 catalogue, so their IDs start at 001.
 
 **Shared scenario** (used by MB2-002 to MB2-004, and the same as the demo day):

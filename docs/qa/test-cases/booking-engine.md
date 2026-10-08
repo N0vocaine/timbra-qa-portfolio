@@ -87,7 +87,11 @@ These cases cover **eligibility** (*"Can this time slot be booked?"*): the booki
 | Evidence | Automated domain-logic test (schedule resolution) |
 | Notes | A related case (SCH-003) checks that a *closed* override gives zero availability even on a normally open weekday |
 
-**Test data seen in the application (BK-005 and SCH-002):** the local demo schedule has a split Wednesday and a single date overridden to 10:00–14:00.
+#### History: V1 screenshot
+
+Captured from a local development environment with fictional data during V1. Kept as history; it is not the current interface.
+
+**Test data seen in the application (BK-005 and SCH-002, V1):** the local demo schedule has a split Wednesday and a single date overridden to 10:00–14:00.
 
 ![Admin schedule page showing weekly working hours, including a split Wednesday from 09:00 to 12:00 and 13:00 to 17:00, closed weekends, and a date-specific override from 10:00 to 14:00](../../../assets/screenshots/03-schedule-weekly-hours-and-override.png)
 

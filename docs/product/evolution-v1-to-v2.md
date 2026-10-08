@@ -7,7 +7,7 @@ This page follows one product decision from start to finish:
 | Where | What it runs |
 |---|---|
 | [Live demo](https://timbra-booking-demo.vercel.app) | **V2 pilot**, with fictional data |
-| Production (the pilot salon's site) | Not described here. It has not been verified to run V2, so this page makes no claim about it. |
+| Production (the pilot salon's site) | V2 since 30 September 2026; release **v2.1.0** since 6 October 2026 (deployment verified with read-only checks). Validation by the salon owner is still pending. |
 | This portfolio | Documentation only. The application source code is private. |
 
 ---
@@ -41,7 +41,7 @@ In short, V1 assumed that customers should always see every valid time. For this
 
 | Decision | V2 rule |
 |---|---|
-| Public availability | Only the **edge times** of each free window: the earliest and the latest valid start. Times in the middle are not offered. |
+| Public availability | Only the **edge times** of each free window: the earliest and the latest valid start. Times in the middle are not offered. (Refined twice since; see [3a](#3a-refinements-after-the-first-v2).) |
 | Admin availability | The salon owner keeps **every valid time**, so regular clients can still be booked anywhere. |
 | Preparation | 5 minutes, booked **before** the customer's start, and shown separately in the admin calendar. |
 | Buffer | 0 in the pilot workflow. The booking model still supports a buffer for other businesses. |
@@ -49,7 +49,17 @@ In short, V1 assumed that customers should always see every valid time. For this
 | Admin booking window | 365 days, as a technical safety limit for the pilot. |
 | "Show more" | Removed from the public page: the public list is already short (at most two times per free window). |
 
-Still open, to be confirmed with the salon owner: what an empty day should offer, whether the first client may start at 09:05 when the salon opens at 09:00, and what happens when minimum notice removes an edge time.
+Still open, to be confirmed with the salon owner: what an empty day should offer, and whether the first client may start at 09:05 when the salon opens at 09:00. (What happens when minimum notice removes an edge time was decided later; see 3a.)
+
+## 3a. Refinements after the first V2
+
+| When | Change | Why |
+|---|---|---|
+| 30 September 2026 (first V2 production release) | **Booking-anchored edges.** Next to an existing booking, only the time on the booking side is offered. A window with no booking on either side (bounded only by opening, a break or closing) still offers both its edges. An edge removed by minimum notice is not replaced. | Times attach to bookings instead of to opening, lunch or closing times |
+| 6 October 2026 (v2.1.0) | **Day extremes.** The day's earliest and latest eligible start are offered in addition, wherever they fall. Offered times are listed in **time order**, and the recommended time keeps its badge. | A single evening booking no longer removes the morning option |
+| 6 October 2026 (v2.1.0) | **Daily break 13:00–14:00** on working days, set up as salon configuration | Preparation and treatment may not overlap the break |
+
+Applied to the worked example in section 5, all three versions of the rule select the same times (10:10 and 15:10, then 11:15 and 15:10 after one booking), with or without the daily break. This follows from the rules; it is not a new observation of the demo.
 
 ## 4. V2 behaviour
 
@@ -59,13 +69,13 @@ flowchart TD
     H -- "No" --> N["No times"]
     H -- "Yes" --> L["Eligibility<br/>working hours, exceptions,<br/>existing bookings incl. preparation"]
     L --> Q{"Who is booking?"}
-    Q -- "Online customer" --> E["V2 edge filter<br/>earliest + latest valid time<br/>of each free window"]
+    Q -- "Online customer" --> E["V2 public offer<br/>edge times (see 3a for<br/>the current rule)"]
     Q -- "Salon owner" --> AL["Every valid time"]
     E --> P1["Remove past times<br/>and times inside minimum notice"]
     AL --> P2["Remove past times"]
     P1 --> R1["Ranking<br/>orders the times, removes none"]
     P2 --> R2["Ranking<br/>orders the times, removes none"]
-    R1 --> U1["Public page: every offered time,<br/>first one marked recommended"]
+    R1 --> U1["Public page: every offered time<br/>in time order, recommended one marked"]
     R2 --> U2["Admin page: every valid time,<br/>first one marked recommended, with Show more"]
     U1 --> S{"On submit, the server recalculates<br/>for the same audience"}
     U2 --> S
@@ -82,7 +92,7 @@ flowchart TD
 
 | | Online customer | Salon owner (admin) |
 |---|---|---|
-| Times offered | Edge times of each free window | Every valid time |
+| Times offered | The public offer (edge times; current rule in [3a](#3a-refinements-after-the-first-v2)) | Every valid time |
 | Minimum notice | Applies | Skipped (a same-day booking by phone is allowed) |
 | Past times | Never offered | Never offered |
 | Booking window | 2 calendar months | 365 days (pilot limit) |
@@ -131,6 +141,7 @@ The evidence is kept separate by kind.
   - preparation before the treatment, a zero buffer, and the calendar layout.
 
   The V2 cases are described in [Test cases: Magnetic Booking V2](../qa/test-cases/magnetic-booking-v2.md).
+- **Release v2.1.0 (6 October 2026):** the full suite, **1,118 tests** including the real-database integration tests, passed on the release candidate and on the final commit, on an isolated, throwaway test database.
 
 ### Manual validation (local environment)
 - The full V2 story was walked through manually on 29 September 2026: edge times before and after a booking, and the admin calendar showing preparation before the treatment with no buffer.
@@ -144,9 +155,27 @@ The evidence is kept separate by kind.
 - The demo was then restored to its starting state and verified again (**PASS**).
 - The demo's admin area is read-only, so booking an interior time as the salon owner is covered by automated tests, not by the demo.
 
+### Release v2.1.0 (6 October 2026)
+
+| | |
+|---|---|
+| **Behaviour** | The day's earliest and latest eligible start added to the public offer; times shown in time order with the recommended one marked · daily break 13:00–14:00 on working days (no preparation or treatment may overlap it; a booking may end at 13:00, preparation may start at 14:00) · "Back to booking" on every state of the booking-management page · black/pink salon theme, with booking statuses shown by icon or text as well as colour |
+| **How it was verified** | 1,118 automated tests, including real-database integration tests, on an isolated, throwaway test database (never on review or production data), run on the release candidate and on the final commit · code review before the release candidate · the candidate deployed to the demo first, then the final release to production · read-only checks on both sites in Swedish and English (offered times, break boundaries, theme, "Back to booking", privacy headers) · deployed versions confirmed on the hosting platform |
+| **Not verified in this release** | Production admin views behind the salon owner's login · a real screen reader · the salon owner's acceptance |
+| **Release practice** | Semantic versioning with a tested release candidate (v2.1.0-rc.1) and a final tag created only after the production deployment was verified. There were no database migrations; the break was applied as configuration, without moving or cancelling existing bookings. |
+| **Known issues** | On short admin calendar cards, preparation is visible only as a hatched strip without text. A customer who tries to cancel an appointment that has already started sees the "less than 24 hours left" message. Fixes for both are in review (7 October 2026) and are **not released** ([known limitations, L12](../qa/known-limitations-and-future-qa.md)). |
+
+### Demo review (7 October 2026)
+
+A documentation review on 7 October 2026 followed the public booking flow from treatment selection to the day-and-time step for future dates (no time was selected and nothing was submitted), and read the read-only admin views. What it observed is shown in [Magnetic Booking](magnetic-booking.md#current-behaviour-v2-release-v210) and the [screenshot index](../../assets/screenshots/README.md). The demo had no bookings on any selectable future date, so the time offered next to an existing booking could not be shown live; that rule is covered by automated tests.
+
+![Admin list view for 6 October 2026 in the read-only demo: a 5-minute preparation row before each of two bookings, free time, and the 13:00–14:00 break](../../assets/screenshots/10-v2.1.0-admin-list-2026-10-06.jpg)
+
+*Admin list view (read-only demo) for 6 October 2026, the day in section 5, captured 7 October 2026: preparation is its own 5-minute row before each booking, there is no buffer, and the break appears as "Stängt / ej tillgänglig" (closed / unavailable). Customer names are masked.*
+
 ### Not verified yet
 - **Salon owner validation of V2** is planned and has not taken place. Until then, the V2 rules are pilot behaviour, not final.
-- **Production** is not claimed to run V2.
+- **Production:** v2.1.0 was checked read-only after deployment (offered times, break, theme, "Back to booking", privacy headers). The production admin views behind the salon owner's login were not checked.
 
 ## 7. What V1 contributed to V2
 

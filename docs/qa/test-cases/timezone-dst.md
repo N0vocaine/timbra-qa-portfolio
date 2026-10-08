@@ -53,7 +53,7 @@ All cases inject the exact instant under test, so they are deterministic and rep
 | Preconditions | Cancellation cutoff 24 hours. Timezone Europe/Stockholm. |
 | Test data | Appointment **Sunday 29 March 2026, 15:00** (summer time, UTC+2). The clocks moved forward earlier that morning. |
 | Steps | 1. Evaluate cancellation just before, exactly at, and after the cutoff instant |
-| Expected result | The cutoff is **24 real hours** before the appointment, which is **Saturday 14:00 local time** (winter time, UTC+1), *not* 15:00. Before 14:00 → allowed. At 14:00 or later → rejected. The mirror case at the autumn change is also covered. |
+| Expected result | The cutoff is **24 real hours** before the appointment, which is **Saturday 14:00 local time** (winter time, UTC+1), *not* 15:00. Up to and including 14:00 → allowed; after 14:00 → rejected (V1: at 14:00 already rejected). The mirror case at the autumn change is also covered. |
 | Automation | Automated |
 | Evidence | Automated unit test (cancellation cutoff) |
 | Notes | The illustrative date is chosen to show the effect clearly. The automated suite uses its own transition dates. |

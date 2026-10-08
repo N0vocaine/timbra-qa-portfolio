@@ -12,7 +12,7 @@ These objectives are tied to what Timbra actually does. They were written for V1
 4. **A deterministic, explainable recommendation.** Ranking must never make an invalid time bookable or a valid time unbookable.
 5. **A protected admin area**, with authorization checked at two independent layers.
 6. **Secrets and private links kept out of the browser.**
-7. **The offer follows the product rules, and nothing more.** The recommendation never hides an offered time. In V2, online customers are offered only the edge times of each free window, enforced again when the booking is submitted, and the salon owner keeps every valid time. (V1 objective: "Customer choice preserved. The recommendation never hides valid times.")
+7. **The offer follows the product rules, and nothing more.** The recommendation never hides an offered time. In V2, online customers are offered only a restricted set of edge times (current rule: [Magnetic Booking](../product/magnetic-booking.md)), enforced again when the booking is submitted, and the salon owner keeps every valid time. (V1 objective: "Customer choice preserved. The recommendation never hides valid times.")
 
 ## 2. Risk-based approach
 

@@ -22,14 +22,14 @@ The booking site works in **Swedish and English**.
 
 Timbra's central idea, **Magnetic Booking**, addresses the first two problems.
 - **V1:** it calculated every time that is genuinely bookable, *recommended* the ones that keep the calendar efficient, and kept every other valid time visible.
-- **V2 (the current pilot and demo):** online customers are offered only the edge times of each free window, while the salon owner keeps every valid time.
+- **V2 (the current pilot, in production and the demo):** online customers are offered only a few edge times (since v2.1.0: times next to existing bookings, both edges of windows with no booking, and the day's earliest and latest start), while the salon owner keeps every valid time.
 
 See [Magnetic Booking](magnetic-booking.md) and [From V1 to V2](evolution-v1-to-v2.md).
 
 ## Main features (V1)
 
 *V2 changes:*
-- *public booking offers only edge times, with no "show more";*
+- *public booking offers only a few edge times, in time order, with no "show more";*
 - *preparation is shown separately in the admin calendar;*
 - *the pilot uses no buffer;*
 - *customers and the admin have separate booking windows (2 calendar months / 365 days).*
@@ -75,10 +75,10 @@ These rules were defined as product decisions. Each one became a testable requir
 | Back-to-back bookings | Allowed. One booking may start exactly when the previous one's occupied time ends. |
 | Split working days | A booking may never span a break between two working intervals |
 | Schedule exceptions | A date override **replaces** the weekly schedule for that date; the two are never merged |
-| Recommendation | A suggestion only; it never hides an offered time. V1: every valid time was offered to customers. V2: online customers are offered the edge times of each free window, and the admin every valid time. |
+| Recommendation | A suggestion only; it never hides an offered time. V1: every valid time was offered to customers. V2: online customers are offered the public offer (see [Magnetic Booking](magnetic-booking.md)), and the admin every valid time. |
 | Minimum notice | Applies to customers. The admin may skip it for manual bookings. |
 | Past times | Can **never** be booked, by anyone, including the admin |
-| Cancellation cutoff | A customer can cancel only *strictly before* the cutoff. At the cutoff instant, cancellation is rejected. |
+| Cancellation cutoff | A customer can cancel while at least the cutoff time remains, so cancelling exactly at the cutoff instant is allowed. (V1: only *strictly before* the cutoff.) |
 | Booking statuses | Confirmed → Completed / No-show / Cancelled. These three final statuses can't be undone. |
 | Admin-created bookings | Don't send customer notifications |
 

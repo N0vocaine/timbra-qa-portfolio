@@ -1,165 +1,58 @@
 # Timbra — QA & Product Case Study
 
-**Timbra is a smart booking platform for the salon industry that I created from the ground up as a real-world product and QA project.** Online customers are offered only the booking times that keep a salon's calendar compact, while the salon owner can still book any valid time.
+**Timbra is a booking platform for salons that I created as a real product and QA project.** It offers online customers only the times that keep the salon's calendar compact ("Magnetic Booking"), while the salon owner can still book any valid time.
 
-### ▶ [Try Timbra Demo](https://timbra-booking-demo.vercel.app)
+**Status (7 October 2026):** a V2 pilot for one salon. Release **v2.1.0** has been live in production and in the public demo since 6 October 2026. Validation by the salon owner is still pending. Not a finished commercial product.
 
-**Customer Booking**: explore the public booking flow  
-[Open Customer Booking](https://timbra-booking-demo.vercel.app/sv/booking)
+**▶ Demo (fictional data):** [Customer booking](https://timbra-booking-demo.vercel.app/sv/booking) · [Admin, read-only](https://timbra-booking-demo.vercel.app/admin)
 
-**Admin Demo (read-only)**: explore bookings, preparation time and calendar views  
-[Open Admin Demo](https://timbra-booking-demo.vercel.app/admin)
+## My contribution
 
-A development/pilot demo with fictional data, not a production commercial system.
+I'm **Adriana Bucur**, a QA / Software Tester. I defined the product concept, requirements and business rules, and I own quality: QA strategy, risk analysis, test design, manual testing, validation and regression analysis.
 
-*The live demo shows the current V2 pilot rules; the case study below documents the earlier V1 implementation and evolution.*
+An AI coding assistant helps with the application code, the automated test code, documentation drafts and running checks. I direct the work, review what it produces, do the manual testing and make the product decisions. More in [My role & AI-assisted development](docs/about/my-role-and-ai-assisted-development.md).
 
-I'm **Adriana Bucur**, a QA / Software Tester. I defined Timbra's product concept, requirements, business rules and booking logic, and directed the project from the first idea through implementation, testing and validation. This portfolio documents the QA side of that work:
-
-**Requirement → Risk → Test Scenario → Test Case → Test Execution → Evidence → Regression Protection**
-
-> **About this repository**
-> - **Documentation-only portfolio.** The application source code is **private** and isn't included here.
-> - **AI-assisted implementation:** the application code was generated with an AI coding assistant under my direction and review. My contribution is the product, quality and validation work documented in this portfolio. [More about my role](docs/about/my-role-and-ai-assisted-development.md).
-> - All names, data and examples are sanitized or illustrative. No customer data, credentials or infrastructure details are published.
-
-**Start here:** [From V1 to V2](docs/product/evolution-v1-to-v2.md) → [Magnetic Booking](docs/product/magnetic-booking.md) → [Traceability examples](docs/qa/traceability-examples.md) → [Regression case studies](docs/qa/regression-case-studies.md)
-
----
-
-## At a glance
-
-| | |
-|---|---|
-| **Product** | Online booking for a salon: customers book treatments; the salon owner manages treatments, working hours and bookings |
-| **Live demo** | [Customer Booking](https://timbra-booking-demo.vercel.app/sv/booking) · [Admin Demo (read-only)](https://timbra-booking-demo.vercel.app/admin), with fictional data |
-| **What's interesting** | "Magnetic Booking": online customers are offered times next to existing bookings plus the day's earliest and latest start, so the day fills from both ends and around bookings instead of leaving unusable gaps |
-| **My role** | Product creator and QA owner: concept, requirements, business rules, QA strategy, risk analysis, test design and execution, regression analysis, validation |
-| **QA evidence** | [33 selected test cases](docs/qa/test-cases/README.md) · [Traceability examples](docs/qa/traceability-examples.md) · [5 regression case studies](docs/qa/regression-case-studies.md) · [Risk register](docs/qa/risk-register.md) |
-| **Testing** | 1,118 automated tests for release v2.1.0 (unit, domain logic, security guards and real-database integration tests, run on an isolated test database), plus manual functional, visual, accessibility and responsive testing |
-| **Stack (high level)** | Next.js · TypeScript · PostgreSQL (Supabase) · Vitest · Docker · Vercel · Git / GitHub |
-| **Status** | V2 pilot for one salon; release **v2.1.0** (6 October 2026) is live in production and in the demo. Validation by the salon owner is still pending. Not a finished commercial SaaS product. |
-
-## The problem
-
-A salon's day isn't made of identical one-hour blocks. Treatments have different lengths, and some need **preparation time** before the customer arrives. If bookings land in awkward places, for example a short treatment in the middle of a long free period, the day fills up with small gaps that are too short to sell, and that time is lost.
-
-Timbra V2's answer is **Magnetic Booking**: online customers are offered only a few well-placed times: the times next to existing bookings and the day's earliest and latest possible start. Bookings therefore attach to each other and fill the day from both ends inward. The salon owner can still book any valid time.
-
-**Why it's hard to test:** correctness depends on exact time boundaries, daylight-saving transitions, simultaneous booking requests, and a ranking algorithm that must never change which times are valid.
+This repository is documentation only; the application source code is private.
 
 ## From V1 to V2
 
-| Step | What happened |
-|---|---|
-| **1. V1 idea** | Rank every valid time and recommend the best one, while the customer can still pick any valid time. |
-| **2. Salon owner feedback** | Online booking should fill the remaining gaps, not expose every free minute. A short treatment in the middle of a long free period ruins it for longer treatments. Fill free periods from their edges inward. |
-| **3. Product decision** | *Technically available ≠ offered.* Online customers see only the edge times of each free window; the salon owner keeps every valid time. Preparation 5 min, buffer 0, public booking window 2 calendar months. |
-| **4. V2 behaviour** | A new edge filter between eligibility and ranking. On the same demo day, customers went from eight times plus "Show more" (V1) to **10:10** and **15:10** (V2), then **11:15** and **15:10** after one booking. |
-| **5. Verification** | Automated tests (654 unit and domain-logic tests), a manual local walkthrough, and checks on the deployed demo. Validation of V2 by the salon owner is still planned. |
-| **6. Refinements (v2.1.0)** | After testing, the rule became *times next to bookings + the day's earliest and latest eligible start*, so an evening booking no longer removes the morning option. Times are listed in time order with the recommended one marked. Also: a daily 13:00–14:00 break, a black/pink salon theme, and a "Back to booking" link on the booking-management page. |
+- **V1** ranked every valid time and recommended the best one, while customers could still pick any valid time.
+- **Salon owner feedback (September 2026):** showing every free minute lets short treatments split long free periods into gaps that can't be sold. Free periods should fill from their edges inward.
+- **V2 (production since 30 September 2026):** *technically available ≠ offered.* Online customers see only a few edge times; the salon owner keeps every valid time. On the same demo day, the public offer went from eight times plus "Show more" to two.
+- **v2.1.0 (6 October 2026):** the day's earliest and latest start are always offered, times are listed in time order with the recommended one marked, and a daily 13:00–14:00 break was added.
 
-The full story, with the before → after example and the evidence: **[From V1 to V2](docs/product/evolution-v1-to-v2.md)**
+Details, the before → after example and the verification: **[From V1 to V2](docs/product/evolution-v1-to-v2.md)**. How eligibility, the public offer and ranking work: **[Magnetic Booking](docs/product/magnetic-booking.md)**.
 
-## How Timbra decides which times to offer (V2)
+![Public booking page for Classic facial, days from 20 October 2026, with four offered times per day in time order and one marked as recommended](assets/screenshots/09-v2.1.0-public-booking-week-2026-10-20.jpg)
 
-```mermaid
-flowchart LR
-    A["Candidate time slots"] --> B{"Eligibility<br/>Can this slot be booked?"}
-    B -- "No" --> X["Never offered"]
-    B -- "Yes" --> C["Valid time slots"]
-    C --> D{"Who is booking?"}
-    D -- "Online customer" --> E["Public offer<br/>times next to bookings<br/>+ day's earliest and latest<br/>eligible start"]
-    D -- "Salon owner" --> F["Every valid time"]
-    E --> R1["Ranking: order only<br/>first = recommended"]
-    F --> R2["Ranking: order only<br/>first = recommended"]
-```
+*Scrolled view of the public demo, captured 7 October 2026 (v2.1.0); the demo's fictional-data notice sits just above the visible area: offered times for a 60-minute treatment on days without bookings, split by the 13:00–14:00 break. Each free period offers only its earliest and latest start, and the recommended time is marked. More screenshots, including V1 and the first V2: [screenshot index](assets/screenshots/README.md).*
 
-- **Eligibility** answers *"Can this time slot be booked?"* It checks working hours, schedule exceptions, existing bookings (including preparation), minimum notice and whether the time is in the past.
-- **The public offer** answers *"Should an online customer be offered this eligible time?"* Since v2.1.0 it is the times next to existing bookings plus the day's earliest and latest start that still pass the notice-period check. Breaks (such as lunch), opening and closing are not treated as bookings. The salon owner is not filtered.
-- **Ranking** answers *"How good is this time compared with the others?"* It only **orders** the times it receives and never removes one; the best one is marked as recommended. The customer sees all offered times in time order, with the recommended one marked.
-- On submit, the server recalculates the offer for the same audience, so an online customer can't book an interior time by editing the request.
-
-### V2 in the live demo
-
-*The screenshots below were captured on 30 September 2026, before the v2.1.0 refinements. They show the earlier rule (both edges of every free window) and the earlier colours. The [live demo](https://timbra-booking-demo.vercel.app/sv/booking) shows the current behaviour.*
-
-![Public booking page: Classic facial on 2026-10-06, with 10:10 as the recommended time and 15:10 as the only other available time](assets/screenshots/06-v2-public-booking-edge-times.png)
-
-*V2 public booking, captured 30 September 2026 from the [live demo](https://timbra-booking-demo.vercel.app/sv/booking). "Classic facial" (60 min, 5 min preparation) on 2026-10-06, a day with one free window (10:05–16:10). Only its two edge times are offered: **10:10** (recommended) and **15:10**. No time in the middle of the window is shown, and there is no "Show more".*
-
-![Public booking page: Classic facial on 2026-10-01, with 11:20 recommended and 19:00, 09:05 and 09:25 as the other available times](assets/screenshots/07-v2-public-booking-two-free-windows.png)
-
-*V2 public booking, captured 30 September 2026. On 2026-10-01 (open 09:00–20:00), one existing booking (10:30–11:15, preparation from 10:25) splits the day into two free windows. Each window offers its own two edges: **09:05** and **09:25** (09:00–10:25), and **11:20** and **19:00** (11:15–20:00). Ranking only orders these four times, and 11:20 is recommended.*
-
-![Admin agenda for 2026-10-06: a preparation row before each booking, no buffer rows, and the free window 10:05–16:10 between them](assets/screenshots/08-v2-admin-agenda-preparation-no-buffer.png)
-
-*V2 admin agenda (read-only demo), captured 30 September 2026, for the same day as the first screenshot. Preparation appears as its own row before each treatment (Förberedelsetid = preparation time), there is no buffer after the treatments, and the free window 10:05–16:10 is shown as "Ledig" (free). Customer names are masked in the demo.*
-
-These screenshots show what the demo offers. They don't show the server-side re-check of a submitted time, how the offer is recalculated after a booking, or test results. Those are covered in [From V1 to V2](docs/product/evolution-v1-to-v2.md#6-verification).
-
-### Historical V1 screenshots
-
-The V1 design (eligibility → ranking, with every valid time shown to the customer) is kept as history in [Magnetic Booking](docs/product/magnetic-booking.md#v1-design-history).
-
-![Customer booking page showing 13:05 as the recommended time, with other valid times such as 09:05, 10:30 and 15:30 still available to choose](assets/screenshots/01-magnetic-booking-recommended-time.png)
-
-*Historical V1 screenshot: every valid time stayed bookable, and 13:05 was recommended because it left a larger usable free block. In V2, online customers see only the edge times of each free window.*
-
-![Admin day view showing a 5-minute preparation segment, a booking from 13:00 to 13:50, and a 10-minute buffer segment](assets/screenshots/02-admin-day-view-prep-treatment-buffer.png)
-
-*Historical V1 screenshot. Occupied interval: availability and collision checks include preparation + treatment + buffer, not only the customer-visible appointment. In the V2 pilot, the buffer is 0, so this booking would have no buffer segment.*
-<sub>The admin area is in Swedish: Förberedelse = preparation · Bokad = booked · Bekräftad = confirmed · Buffert / städning = buffer / cleanup. All data shown is fictional demo data.</sub>
-
-Full explanation with worked examples: **[Magnetic Booking](docs/product/magnetic-booking.md)**
-
-## Release v2.1.0 (6 October 2026)
+## QA evidence
 
 | | |
 |---|---|
-| **Behaviour** | Times next to bookings + the day's earliest/latest eligible start, shown in time order with the recommended time marked · daily break 13:00–14:00 on working days (no preparation or treatment may overlap it; a booking may end at 13:00, preparation may start at 14:00) · "Back to booking" on every state of the booking-management page · black/pink salon theme, with booking statuses shown by icon or text as well as colour |
-| **How it was verified** | 1,118 automated tests including real-database integration tests on an isolated test database (never on review or production data) · code review before the release candidate · a tested release candidate deployed to the demo first, then the final release to production · read-only checks on both sites in Swedish and English (offered times, break boundaries, theme, Back to booking, privacy headers) · deployed versions confirmed on the hosting platform |
-| **Release practice** | Semantic versioning with a tested release candidate (v2.1.0-rc.1) and a final tag created only after the production deployment was verified; no database migrations in this release; the lunch break was applied as configuration, without moving or cancelling existing bookings |
-| **Still open** | Validation by the salon owner · preparation label on short calendar cards · wording of one cancellation message for bookings that have already started |
+| **Automated tests** | **1,118 tests passed on 6 October 2026** for release v2.1.0: unit, domain logic, security guards and real-database integration tests, on an isolated, throwaway test database. Earlier: 654 unit and domain-logic tests on 29 September 2026 (first V2). Recorded results; not re-run for this page. |
+| **Test design** | [33 selected test cases](docs/qa/test-cases/README.md) with positive, negative, boundary and concurrency cases, linked to a [risk register](docs/qa/risk-register.md) |
+| **Defects and regressions** | [5 regression case studies](docs/qa/regression-case-studies.md): root cause, fix and the regression test that now guards it |
+| **Manual testing** | Functional, visual and responsive checks of the customer and admin flows; read-only checks of the demo and production after each deployment |
+| **Release practice** | Tested release candidate on the demo first, then production; [release v2.1.0 verification](docs/product/evolution-v1-to-v2.md#release-v210-6-october-2026) |
 
-## What I did as QA
+## Reading path (about 15 minutes)
 
-- **Risk-based strategy.** I identified the failures that would hurt the business most (double bookings, wrong times around daylight-saving changes, unauthorized admin access, secret leakage) and put the deepest test coverage there. See the [Test Strategy](docs/qa/test-strategy.md) and [Risk Register](docs/qa/risk-register.md).
-- **Traceability.** Requirements are linked to risks, scenarios, test cases and evidence. **See one complete QA chain:** [Traceability Example 2](docs/qa/traceability-examples.md#example-2-the-admin-can-skip-minimum-notice-but-never-book-the-past) → [ADM-007](docs/qa/test-cases/booking-engine.md#adm-007-the-admin-still-cannot-book-a-past-time) → [Regression case study 2](docs/qa/regression-case-studies.md#case-study-2--admin-notice-bypass-also-bypassed-the-past-time-safety-floor).
-- **Test execution.** I ran the automated suite and investigated and classified test failures. I performed manual functional, visual and responsive testing of the customer and admin flows, plus post-deployment smoke checks.
-- **Positive, negative and boundary testing.** This includes exact-instant boundaries such as cancellation cutoffs, minimum notice, back-to-back bookings and daylight-saving transitions. See [Boundary & negative testing](docs/qa/boundary-and-negative-testing.md).
-- **Two layers of protection against double booking.** The application re-checks availability before saving, and the database independently rejects overlapping bookings. I designed tests for both layers, including two booking requests arriving at the same moment, and validated the results.
-- **Regression investigation.** For real defects I found the root cause, made sure a regression test was added, and recorded the lesson. See [Regression case studies](docs/qa/regression-case-studies.md).
-- **Known gaps.** I documented what isn't covered yet, such as browser end-to-end automation and a CI gate, as planned next steps. See [Known limitations & future QA](docs/qa/known-limitations-and-future-qa.md).
+1. [From V1 to V2](docs/product/evolution-v1-to-v2.md): feedback, decision, before → after, verification
+2. [Magnetic Booking](docs/product/magnetic-booking.md): eligibility, the public offer and ranking
+3. One complete QA chain: [traceability example 2](docs/qa/traceability-examples.md#example-2-the-admin-can-skip-minimum-notice-but-never-book-the-past) → [test case ADM-007](docs/qa/test-cases/booking-engine.md#adm-007-the-admin-still-cannot-book-a-past-time) → [regression case study 2](docs/qa/regression-case-studies.md#case-study-2--admin-notice-bypass-also-bypassed-the-past-time-safety-floor)
+4. [Test Strategy](docs/qa/test-strategy.md) and [Boundary & negative testing](docs/qa/boundary-and-negative-testing.md)
+5. [Known limitations & future QA](docs/qa/known-limitations-and-future-qa.md)
 
-## Where to look
+## Limitations
 
-| Topic | Documents |
-|---|---|
-| **Product** | [From V1 to V2](docs/product/evolution-v1-to-v2.md) · [Product overview](docs/product/product-overview.md) · [Magnetic Booking](docs/product/magnetic-booking.md) · [Booking flow](docs/product/booking-flow.md) · [Architecture overview](docs/product/architecture-overview.md) |
-| **QA approach** | [Test Strategy](docs/qa/test-strategy.md) · [Test Plan](docs/qa/test-plan.md) · [Test types & approach](docs/qa/test-types-and-approach.md) · [Boundary & negative testing](docs/qa/boundary-and-negative-testing.md) |
-| **QA evidence** | [Test cases](docs/qa/test-cases/README.md) · [Risk Register](docs/qa/risk-register.md) · [Traceability examples](docs/qa/traceability-examples.md) · [Regression case studies](docs/qa/regression-case-studies.md) |
-| **Next steps** | [Known limitations & future QA](docs/qa/known-limitations-and-future-qa.md) · [Planned stakeholder usability session](docs/qa/stakeholder-usability-session.md) |
-| **About me** | [My role & AI-assisted development](docs/about/my-role-and-ai-assisted-development.md) · [Lessons learned](docs/about/lessons-learned.md) |
+- No browser end-to-end automation, CI test gate or staging environment yet.
+- No screen-reader, cross-browser or performance testing yet.
+- Real email/SMS delivery isn't production-ready; the notification pipeline is tested, delivery isn't.
+- Salon-owner validation of V2 is pending, and two minor known issues in v2.1.0 have fixes in review that are not released.
 
-## Current limitations (summary)
-
-- No browser end-to-end automation yet. Manual testing currently covers the full user journeys.
-- No CI test gate before deployment yet.
-- No dedicated staging environment yet.
-- Real email/SMS delivery isn't production-ready yet. The notification *pipeline* is tested, but real delivery isn't.
-- Test-data isolation between local demo data and integration tests is an identified improvement area.
-
-These are the next engineering and QA maturity steps, described in detail in [Known limitations & future QA](docs/qa/known-limitations-and-future-qa.md).
-
-## Repository structure
-
-```
-docs/product/   what Timbra is and how booking works
-docs/qa/        strategy, plan, test cases, risks, traceability, regressions
-docs/about/     my role, AI-assisted development, lessons learned
-assets/         reviewed screenshots from local demo data
-```
+Details: [Known limitations & future QA](docs/qa/known-limitations-and-future-qa.md).
 
 ---
 

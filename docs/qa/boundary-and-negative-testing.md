@@ -9,7 +9,7 @@ Because the current time is always **passed in explicitly** to the business logi
 | Rule | Just inside | **On the boundary** | Just outside | Test case |
 |---|---|---|---|---|
 | Minimum notice (120 min, now = 10:00) | 12:05 → offered | **12:00 → offered** (boundary allowed) | 11:59 → not offered | [BK-010](test-cases/booking-engine.md#bk-010-minimum-notice-for-customer-bookings-lead-time) |
-| Cancellation cutoff (appointment Fri 15:00, 24 h) | Thu 14:59 → allowed | **Thu 15:00 → rejected** (boundary *not* allowed) | Thu 16:00 → rejected | [CAN-003 / 004 / 005](test-cases/cancellation.md) |
+| Cancellation cutoff (appointment Fri 15:00, 24 h) | Thu 14:59 → allowed | **Thu 15:00 → allowed** (boundary allowed; V1: rejected) | Thu 15:00 + 1 ms → rejected | [CAN-003 / 004 / 005](test-cases/cancellation.md) |
 | Back-to-back bookings (previous occupied end 11:05) | — | **Occupied start 11:05 → allowed** | Occupied start 11:00 → rejected | [BK-004](test-cases/booking-engine.md#bk-004-back-to-back-bookings-are-allowed) |
 | Past-time floor (now = 16:00, prep 5 min) | Customer start 16:10 → offered | **Customer start 16:00 → rejected** (its occupied start 15:55 is already past) | Earlier today → rejected | [ADM-007](test-cases/booking-engine.md#adm-007-the-admin-still-cannot-book-a-past-time) |
 | Split working day (09:00–12:00 / 13:00–17:00) | Occupied end 12:00 → allowed | — | Any overlap with 12:00–13:00 → rejected | [BK-005](test-cases/booking-engine.md#bk-005-a-split-working-day-is-never-bridged) |
@@ -18,9 +18,11 @@ Because the current time is always **passed in explicitly** to the business logi
 | DST fall back | 01:59, 03:00 → valid | **02:00–02:59 → occur twice → rejected** | — | [TZ-003](test-cases/timezone-dst.md#tz-003-an-ambiguous-local-time-fall-back-is-rejected) |
 | Cutoff across DST | — | **24 *real* hours, not clock-face hours** | — | [TZ-007](test-cases/timezone-dst.md#tz-007-the-cancellation-cutoff-stays-correct-across-a-dst-change) |
 
-**What the boundaries show:** the rules don't all treat the boundary the same way. Minimum notice **includes** its boundary (exactly 2 hours is enough). The cancellation cutoff **excludes** its boundary (exactly 24 hours before is too late). A test suite that only checked "clearly before" and "clearly after" would miss an off-by-one in either direction. Each boundary is a separate, explicit case.
+**What the boundaries show:** the rules don't all treat the boundary the same way. Minimum notice **includes** its boundary (exactly 2 hours is enough). In V1 the cancellation cutoff **excluded** its boundary (exactly 24 hours before was too late); V2 changed it to include the boundary, and the exact-instant test changed with it. A test suite that only checked "clearly before" and "clearly after" would miss an off-by-one in either direction. Each boundary is a separate, explicit case.
 
-### Seen in the application
+### Seen in the application (history: V1 captures)
+
+Captured from a local development environment with fictional data during V1. Kept as history; they are not the current interface.
 
 **Schedule boundaries.** These are the rules behind the split-day and schedule-exception cases: Wednesday is split into 09:00–12:00 and 13:00–17:00, and a single date is overridden to 10:00–14:00.
 
@@ -50,7 +52,11 @@ Because the current time is always **passed in explicitly** to the business logi
 | Admin access | Not signed in; signed in but not allow-listed; allow-list missing | [Denied in all three cases](test-cases/auth-and-security.md) |
 | Time conversion | Non-existent or ambiguous local time | Explicit error, never a guess |
 
-**Seen in the application:** the customer details form after submitting an empty name, a malformed email (`anna@example`) and a malformed phone number (`12`). Each field is rejected individually. In the local demo environment, the booking and customer counts were checked before and after the submission, and nothing had been saved.
+#### History: V1 screenshot
+
+Captured from a local development environment with fictional data during V1. Kept as history; it is not the current interface.
+
+**Seen in the application (V1):** the customer details form after submitting an empty name, a malformed email (`anna@example`) and a malformed phone number (`12`). Each field is rejected individually. In the local demo environment, the booking and customer counts were checked before and after the submission, and nothing had been saved.
 
 ![Customer details form showing three field-level errors: name is required, enter a valid email address, and enter a valid phone number](../../assets/screenshots/04-negative-test-validation-errors.png)
 

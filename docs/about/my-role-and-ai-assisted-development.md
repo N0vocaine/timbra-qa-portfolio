@@ -15,14 +15,14 @@ My QA work follows **Requirement → Risk → Test Scenario → Test Case → Te
 | Created / directed by me | Implemented with AI assistance |
 |---|---|
 | Product concept and V1 scope | Application code |
-| Magnetic Booking concept and expected behaviour | |
-| Requirements and business rules | |
+| Magnetic Booking concept and expected behaviour | Automated test code, written to the test cases and rules I defined |
+| Requirements and business rules | Drafting of documentation, which I reviewed and edited |
 | Product and development decisions, and review of each change | |
 | QA strategy, risk analysis, test design and test execution | |
 | Regression investigation and validation | |
 | Product and QA documentation | |
 
-The application code was generated with an AI coding assistant under my direction and review, in small, reviewed steps. My work was to decide **what** should be built, define **when it was correct**, and verify **that it actually was**. This portfolio is about that product, quality and validation work. It is not a claim that I hand-wrote the application code.
+The application code and the automated test code were generated with an AI coding assistant under my direction and review, in small, reviewed steps. The assistant also ran many of the automated and browser checks in my working sessions; I decided what to check, reviewed the results and decided what counted as done. My work was to decide **what** should be built, define **when it was correct**, and verify **that it actually was**. This portfolio is about that product, quality and validation work. It is not a claim that I hand-wrote the application code.
 
 ## What I was responsible for
 
@@ -31,17 +31,17 @@ The application code was generated with an AI coding assistant under my directio
 - Defined the V1 scope: one salon, one practitioner, Swedish and English, customer self-service, and admin management.
 - Turned the salon owner's feedback on V1 into the V2 rules:
   - technically available is not the same as offered;
-  - online customers are offered only the edge times of each free window, while the salon owner keeps every valid time;
+  - online customers are offered only a few edge times, while the salon owner keeps every valid time (refined in v2.1.0 to the times next to bookings plus the day's earliest and latest start);
   - preparation is 5 minutes and the buffer is 0 in the pilot;
   - customers and the admin have separate booking windows.
 
   See [From V1 to V2](../product/evolution-v1-to-v2.md).
 - Defined the business rules and directed the product decisions that made them testable, for example:
-  - V1: a recommendation is a **suggestion, never a restriction**, and every valid time stays bookable. In V2 this still holds for the salon owner, while online customers are offered the edge times.
+  - V1: a recommendation is a **suggestion, never a restriction**, and every valid time stays bookable. In V2 this still holds for the salon owner, while online customers are offered a restricted set of edge times.
   - A schedule exception **replaces** the weekly hours for that date rather than merging with them.
   - The admin may skip minimum notice for manual bookings, but can **never** book a past time.
   - Admin-created bookings don't send customer notifications.
-  - Cancellation is allowed only strictly before the cutoff.
+  - Cancellation is allowed up to the cutoff (V1: only strictly before it; V2 includes the cutoff instant).
 - Worked in a deliberate, incremental build order: database rules before UI, core logic before connecting real data, correctness before visual polish.
 
 ### QA strategy and risk analysis
@@ -53,7 +53,7 @@ The application code was generated with an AI coding assistant under my directio
 - Decided what should be automated and what should stay manual, and why ([Test types & approach](../qa/test-types-and-approach.md)).
 
 ### Test execution and validation
-- Ran the automated test suite, reviewed the results, and investigated and classified test failures so that each was explained rather than ignored.
+- Directed and reviewed the automated test runs, and investigated and classified test failures so that each was explained rather than ignored.
 - Validated the business rules against the expected behaviour I had defined.
 - Performed manual functional testing of the customer and admin flows.
 - Performed manual visual and responsive testing of the admin calendars at desktop, tablet and mobile widths.
