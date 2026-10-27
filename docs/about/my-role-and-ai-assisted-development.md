@@ -4,7 +4,9 @@
 
 ## My role in one paragraph
 
-Timbra began with a salon owner's suggestion to explore a booking system, as she and her colleagues were dissatisfied with their existing solution. I developed the Timbra concept and the Magnetic Booking approach, defined the requirements and business rules, and coordinated implementation using an AI coding assistant. I reviewed the results and tested the application throughout development.
+Timbra began when a salon owner I know asked whether I could help create a booking application. She and her colleagues were dissatisfied with the solution they were using, and I took on the challenge of finding a way to build an alternative, despite having no prior software development experience.
+
+I developed the Magnetic Booking approach, defined requirements and business rules with input from the salon owner, and coordinated implementation using an AI coding assistant. Throughout development, I reviewed the results and tested the application.
 
 Within that, my professional focus is **QA and software testing**. I designed the QA strategy, performed the risk analysis, designed the testing and carried out or directed its execution, investigated and classified test failures and regressions, validated the business rules, and documented the product and QA process.
 
