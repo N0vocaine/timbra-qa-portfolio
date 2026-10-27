@@ -4,7 +4,7 @@
 
 ## My role in one paragraph
 
-I conceived Timbra, including the Magnetic Booking idea and its expected behaviour, and defined the requirements and business rules. I then coordinated the AI-assisted implementation and directed the project from the first idea through testing, release and validation (release v3.0.0 in October 2026). I did not hand-write the application code: an AI coding assistant wrote it under my direction and review.
+Timbra began with a salon owner's suggestion to explore a booking system, as she and her colleagues were dissatisfied with their existing solution. I developed the Timbra concept and the Magnetic Booking approach, defined the requirements and business rules, and coordinated implementation using an AI coding assistant. I reviewed the results and tested the application throughout development.
 
 Within that, my professional focus is **QA and software testing**. I designed the QA strategy, performed the risk analysis, designed the testing and carried out or directed its execution, investigated and classified test failures and regressions, validated the business rules, and documented the product and QA process.
 
