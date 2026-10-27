@@ -16,7 +16,7 @@ My QA work follows **Requirement → Risk → Test Scenario → Test Case → Te
 
 | Created / directed by me | Implemented with AI assistance |
 |---|---|
-| Product concept and V1 scope | Application code |
+| Product definition and V1 scope, based on the salon owner's request and input | Application code |
 | Magnetic Booking concept and expected behaviour | Automated test code, written to the test cases and rules I defined |
 | Requirements and business rules | Drafting of documentation, which I reviewed and edited |
 | Product and development decisions, and review of each change | |
@@ -29,7 +29,7 @@ The application code and the automated test code were generated with an AI codin
 ## What I was responsible for
 
 ### Product concept, requirements and business rules
-- Created the product concept: a salon booking platform that recommends calendar-friendly times (Magnetic Booking). In V1, this was done without restricting customer choice.
+- Turned the salon owner's request for a better booking application into a product definition, and developed its central approach: a booking platform that recommends calendar-friendly times (Magnetic Booking). In V1, this was done without restricting customer choice.
 - Defined the V1 scope: one salon, one practitioner, Swedish and English, customer self-service, and admin management.
 - Turned the salon owner's feedback on V1 into the V2 rules:
   - technically available is not the same as offered;

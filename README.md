@@ -20,7 +20,7 @@
 
 ## My contribution
 
-I'm **Adriana Bucur**, a QA / Software Tester. I defined the product concept, requirements and business rules, and I own quality: QA strategy, risk analysis, test design, manual testing, validation and regression analysis.
+I'm **Adriana Bucur**, a QA / Software Tester. Timbra started with a salon owner's request for a better booking application. I developed the Magnetic Booking approach and defined the requirements and business rules with her input, and I own quality: QA strategy, risk analysis, test design, manual testing, validation and regression analysis.
 
 An AI coding assistant helps with the application code, the automated test code, documentation drafts and running checks. I direct the work, review what it produces, do the manual testing and make the product decisions. More in [My role & AI-assisted development](docs/about/my-role-and-ai-assisted-development.md).
 

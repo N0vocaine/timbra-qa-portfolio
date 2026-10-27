@@ -2,7 +2,7 @@
 
 ## What Timbra is
 
-*I conceived Timbra and its Magnetic Booking idea, defined the requirements and business rules, and coordinated the AI-assisted implementation from product concept to release v3.0.0. The application code was written by an AI coding assistant under my direction and review, not by me; see [My role](../about/my-role-and-ai-assisted-development.md).*
+*Timbra began when a salon owner asked me to help create a booking application, because she and her colleagues were dissatisfied with their existing solution. I developed the Magnetic Booking approach, defined the requirements and business rules with her input, and coordinated the AI-assisted implementation through release v3.0.0, reviewing the results and testing the application. The application code was written by an AI coding assistant under my direction and review, not by me; see [My role](../about/my-role-and-ai-assisted-development.md).*
 
 Timbra is an online appointment-booking platform. Its first version (V1) runs for **a beauty salon in Sweden**, with one salon and one practitioner (the salon owner).
 
