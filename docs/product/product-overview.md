@@ -2,11 +2,11 @@
 
 ## What Timbra is
 
-*I created Timbra from the ground up, from product concept to validated V1. The application code was generated with AI assistance under my direction; see [My role](../about/my-role-and-ai-assisted-development.md).*
+*I conceived Timbra and its Magnetic Booking idea, defined the requirements and business rules, and coordinated the AI-assisted implementation from product concept to release v3.0.0. The application code was written by an AI coding assistant under my direction and review, not by me; see [My role](../about/my-role-and-ai-assisted-development.md).*
 
 Timbra is an online appointment-booking platform. Its first version (V1) runs for **a beauty salon in Sweden**, with one salon and one practitioner (the salon owner).
 
-- **Customers** open the booking site, choose a treatment, a date and a time, enter their contact details, and get an immediate confirmation. They don't need to phone the salon, send a message or create an account.
+- **Customers** open the booking site, choose one or more treatments (since v3.0.0, up to five as one appointment), a date and a time, enter their contact details, and get an immediate confirmation. They don't need to phone the salon, send a message or create an account.
 - **The salon owner** manages treatments, weekly working hours, one-off schedule exceptions and all bookings from a protected admin area.
 
 The booking site works in **Swedish and English**.
@@ -22,7 +22,8 @@ The booking site works in **Swedish and English**.
 
 Timbra's central idea, **Magnetic Booking**, addresses the first two problems.
 - **V1:** it calculated every time that is genuinely bookable, *recommended* the ones that keep the calendar efficient, and kept every other valid time visible.
-- **V2 (the current pilot, in production and the demo):** online customers are offered only a few edge times (since v2.1.0: times next to existing bookings, both edges of windows with no booking, and the day's earliest and latest start), while the salon owner keeps every valid time.
+- **V2 (the pilot rules, in production since 30 September 2026):** online customers are offered only a few edge times (since v2.1.0: times next to existing bookings, both edges of windows with no booking, and the day's earliest and latest start), while the salon owner keeps every valid time.
+- **v3.0.0 (the current release, in production and the demo since 27 October 2026):** the same V2 offer, for one treatment or for up to five treatments booked as one appointment. Treatment categories and show-only entries are supported by the code but are not configured on the hosted demo or production.
 
 See [Magnetic Booking](magnetic-booking.md) and [From V1 to V2](evolution-v1-to-v2.md).
 
@@ -33,6 +34,10 @@ See [Magnetic Booking](magnetic-booking.md) and [From V1 to V2](evolution-v1-to-
 - *preparation is shown separately in the admin calendar;*
 - *the pilot uses no buffer;*
 - *customers and the admin have separate booking windows (2 calendar months / 365 days).*
+
+*v3.0.0 changes:*
+- *online customers can book up to five treatments as one appointment, with the total time and price shown before confirming;*
+- *the salon owner's manual booking still takes one treatment per booking.*
 
 *See [From V1 to V2](evolution-v1-to-v2.md).*
 
@@ -81,6 +86,7 @@ These rules were defined as product decisions. Each one became a testable requir
 | Cancellation cutoff | A customer can cancel while at least the cutoff time remains, so cancelling exactly at the cutoff instant is allowed. (V1: only *strictly before* the cutoff.) |
 | Booking statuses | Confirmed → Completed / No-show / Cancelled. These three final statuses can't be undone. |
 | Admin-created bookings | Don't send customer notifications |
+| Multi-treatment appointment (v3.0.0) | Up to five distinct treatments, kept in the customer's order; the first treatment's preparation applies once, then the treatments run back to back; total time and price are the sums |
 
 ## V1 scope
 

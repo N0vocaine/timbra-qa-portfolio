@@ -4,9 +4,9 @@
 
 ## My role in one paragraph
 
-I created Timbra from the ground up. I originated the product concept, including the Magnetic Booking idea and its expected behaviour, and defined the requirements and business rules. I then directed the project from the first idea through implementation, testing and validation.
+I conceived Timbra, including the Magnetic Booking idea and its expected behaviour, and defined the requirements and business rules. I then coordinated the AI-assisted implementation and directed the project from the first idea through testing, release and validation (release v3.0.0 in October 2026). I did not hand-write the application code: an AI coding assistant wrote it under my direction and review.
 
-Within that, my professional focus is **QA and software testing**. I designed the QA strategy, performed the risk analysis, designed and executed testing, investigated and classified test failures and regressions, validated the business rules, and documented the product and QA process.
+Within that, my professional focus is **QA and software testing**. I designed the QA strategy, performed the risk analysis, designed the testing and carried out or directed its execution, investigated and classified test failures and regressions, validated the business rules, and documented the product and QA process.
 
 My QA work follows **Requirement → Risk → Test Scenario → Test Case → Test Execution → Evidence → Regression Protection**, with an understanding of the product and its technical context.
 
@@ -36,6 +36,7 @@ The application code and the automated test code were generated with an AI codin
   - customers and the admin have separate booking windows.
 
   See [From V1 to V2](../product/evolution-v1-to-v2.md).
+- Specified multi-service booking for v3.0.0, which the salon owner requested: I clarified and approved its preparation rules (the first treatment's preparation once, then the treatments back to back) and required that the customer's chosen order is kept.
 - Defined the business rules and directed the product decisions that made them testable, for example:
   - V1: a recommendation is a **suggestion, never a restriction**, and every valid time stays bookable. In V2 this still holds for the salon owner, while online customers are offered a restricted set of edge times.
   - A schedule exception **replaces** the weekly hours for that date rather than merging with them.
@@ -55,9 +56,9 @@ The application code and the automated test code were generated with an AI codin
 ### Test execution and validation
 - Directed and reviewed the automated test runs, and investigated and classified test failures so that each was explained rather than ignored.
 - Validated the business rules against the expected behaviour I had defined.
-- Performed manual functional testing of the customer and admin flows.
+- Performed manual functional testing of the customer and admin flows; for example, my local testing of multi-service booking found that only two treatments could be selected, which was fixed before the release.
 - Performed manual visual and responsive testing of the admin calendars at desktop, tablet and mobile widths.
-- Performed post-deployment smoke checks.
+- Directed and reviewed the post-deployment smoke checks; many of them, including the v3.0.0 read-only checks of both live sites, were run by the AI assistant.
 
 ### Regression investigation
 - Investigated real defects, including their root cause and classification, and made sure each fix came with regression protection ([Regression case studies](../qa/regression-case-studies.md)).

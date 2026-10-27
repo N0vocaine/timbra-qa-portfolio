@@ -179,7 +179,7 @@ No v3.0.0 screenshots are published yet; the screenshots on this page are dated 
 
 ### Demo review (7 October 2026)
 
-A documentation review on 7 October 2026 followed the public booking flow from treatment selection to the day-and-time step for future dates (no time was selected and nothing was submitted), and read the read-only admin views. What it observed is shown in [Magnetic Booking](magnetic-booking.md#current-behaviour-v2-release-v210) and the [screenshot index](../../assets/screenshots/README.md). The demo had no bookings on any selectable future date, so the time offered next to an existing booking could not be shown live; that rule is covered by automated tests.
+A documentation review on 7 October 2026 followed the public booking flow from treatment selection to the day-and-time step for future dates (no time was selected and nothing was submitted), and read the read-only admin views. What it observed is shown in [Magnetic Booking](magnetic-booking.md#current-behaviour-v2-release-v300) and the [screenshot index](../../assets/screenshots/README.md). The demo had no bookings on any selectable future date, so the time offered next to an existing booking could not be shown live; that rule is covered by automated tests.
 
 ![Admin list view for 6 October 2026 in the read-only demo: a 5-minute preparation row before each of two bookings, free time, and the 13:00–14:00 break](../../assets/screenshots/10-v2.1.0-admin-list-2026-10-06.jpg)
 
