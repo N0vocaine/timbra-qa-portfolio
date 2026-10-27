@@ -1,6 +1,6 @@
 # Timbra — QA & Product Case Study
 
-**Timbra is a booking platform for salons that I created as a real product and QA project.** It offers online customers only the times that keep the salon's calendar compact ("Magnetic Booking"), while the salon owner can still book any valid time.
+**Timbra is a salon booking platform developed in response to a salon owner's request. I defined its Magnetic Booking approach and led its AI-assisted development as a product and QA project.** It offers online customers only the times that keep the salon's calendar compact ("Magnetic Booking"), while the salon owner can still book any valid time.
 
 **Status (27 October 2026):** a pilot for one salon. Release **v3.0.0** has been live in production and in the public demo since 27 October 2026: customers can now book up to five treatments as one appointment. The salon owner has validated the booking algorithm (how times are offered and recommended); validation of the other features, including multi-service booking, is still pending. Not a finished commercial product.
 
