@@ -12,7 +12,7 @@
 - **Customer booking** ([Swedish](https://timbra-booking-demo.vercel.app/sv/booking) · [English](https://timbra-booking-demo.vercel.app/en/booking)):
   - Pick one to five treatments; they run back to back, in the order you choose.
   - Then pick a date. You see only the offered times, in time order, with one marked as recommended.
-  - Completing the form saves a real booking in the shared demo. The demo accepts at most 20 public bookings an hour from all visitors together.
+  - Completing the form saves a booking in the shared demo. The demo accepts at most 20 public bookings an hour from all visitors together.
 - **[Admin, read-only](https://timbra-booking-demo.vercel.app/admin):**
   - Your booking appears in the day, week and list views, with the customer name masked (for example "D•••").
   - History, treatments, opening hours and an overview can be viewed too. Nothing can be changed.
