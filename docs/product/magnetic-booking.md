@@ -2,9 +2,11 @@
 
 Magnetic Booking is the core product idea in Timbra: the booking logic protects the salon's calendar from unusable gaps. This page describes the **current V2 behaviour**, which the [live demo](https://timbra-booking-demo.vercel.app) runs, and keeps the **V1 design** as history. [From V1 to V2](evolution-v1-to-v2.md) explains why it changed.
 
-## Current behaviour (V2, release v2.1.0)
+## Current behaviour (V2, release v3.0.0)
 
 > **Since v2.1.0 (6 October 2026):** an online customer is offered, for each free window, the time next to an existing booking (or both edges of a window that has no booking on either side), **plus the day's earliest and latest start** that still pass the notice-period check. The first V2 offered both edges of every free window (30 September screenshot below); from 30 September only the booking-side edge was offered next to a booking. The day extremes keep a morning and an evening option on days with a single booking. Offered times are shown in time order with the recommended one marked.
+
+> **Since v3.0.0 (27 October 2026):** the rules above are unchanged. An online customer can now choose up to five treatments as one appointment; eligibility, the public offer and ranking then work on the appointment's combined length (the first treatment's preparation once, then every treatment back to back). The salon owner's manual booking still takes one treatment per booking.
 
 Three separate questions are answered, in this order:
 
@@ -109,7 +111,7 @@ Candidate times are generated on a fixed grid (every 5 minutes by default) withi
 
 Checking availability when the page loads isn't enough, because another customer may take the time a moment later. Timbra defends in two independent layers:
 
-1. **Application layer.** When the customer confirms, the server recalculates availability from scratch and rejects a time that is no longer valid.
+1. **Application layer.** When the customer confirms, the server recalculates availability from scratch and rejects a time that is no longer valid. For a multi-treatment appointment (since v3.0.0) it first re-reads the chosen treatments, their order and totals; the database then derives the stored totals itself and refuses unknown or changed treatments.
 2. **Database layer.** The database itself refuses to store two overlapping active bookings. This holds even if two requests arrive at exactly the same moment.
 
 Both layers are covered by automated tests. The database test sends two simultaneous booking requests for the same time and checks that **exactly one** succeeds.
@@ -141,7 +143,7 @@ The salon is open 09:00–12:00, and an existing booking occupies 10:00–10:30.
 
 **09:00 is recommended**, because it keeps the remaining time usable. In V1, the customer could still choose 09:15 or any other valid time.
 
-**In V2 (v2.1.0)**, the same day has two free windows: 09:00–10:00 and 10:30–12:00. An online customer is offered **09:30 and 10:30** (next to the booking) and **09:00 and 11:30** (the day's earliest and latest start). 09:15 is not offered, because it would split the first window. Ranking then orders those four times. The salon owner can still book 09:15.
+**In V2 (since v2.1.0)**, the same day has two free windows: 09:00–10:00 and 10:30–12:00. An online customer is offered **09:30 and 10:30** (next to the booking) and **09:00 and 11:30** (the day's earliest and latest start). 09:15 is not offered, because it would split the first window. Ranking then orders those four times. The salon owner can still book 09:15.
 
 ## 4. The rules that tie it together
 

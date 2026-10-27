@@ -6,14 +6,14 @@ This page describes Timbra's main user flows at a high level: the customer journ
 
 ```mermaid
 flowchart TD
-    S["Customer opens the booking site<br/>(Swedish or English)"] --> T["Chooses a treatment"]
+    S["Customer opens the booking site<br/>(Swedish or English)"] --> T["Chooses one or more treatments<br/>(up to five, in their order; v3.0.0)"]
     T --> D["Chooses a date<br/>(within the booking window)"]
-    D --> A["Sees the offered times<br/>(V2: edge times of each free window)<br/>one highlighted as Recommended"]
+    D --> A["Sees the offered times<br/>(V2: edge times of each free window,<br/>for the combined length)<br/>one highlighted as Recommended"]
     A --> P["Picks one of the offered times"]
     P --> F["Enters name, email, phone"]
     F --> V{"Details valid?"}
     V -- "No" --> F
-    V -- "Yes" --> R{"Server re-checks:<br/>is the time still offered?"}
+    V -- "Yes" --> R{"Server re-checks the treatments<br/>and totals: is the time still offered?"}
     R -- "No longer offered" --> C["Friendly 'this time was just taken' message<br/>no booking created"]
     C --> A
     R -- "Still offered" --> B["Booking saved<br/>(database rejects any overlap)"]
@@ -25,6 +25,7 @@ flowchart TD
 
 | Step | Main risks | How it's tested |
 |---|---|---|
+| Treatment selection (v3.0.0) | A sixth treatment accepted; wrong order or totals; an unknown, inactive or changed treatment booked | Automated domain-logic and real-database tests (the database refuses such treatments and more than five); manual browser checks on a local test stack |
 | Available times | Offering an invalid time; offering an interior time publicly (V2); hiding an offered time | Automated unit and domain-logic tests of eligibility, the V2 edge filter and ranking |
 | Recommended time | Recommendation hiding the other offered times | Automated test that every offered time stays present; manual check in the browser |
 | Customer details | Bad data accepted, or good data rejected | Automated validation tests with valid and invalid inputs |
@@ -81,8 +82,9 @@ flowchart TD
 | **Minimum notice (lead time)** | Enforced | **Skipped**, because the owner is booking a customer they are already talking to |
 | **Past times** | Never bookable | **Never bookable** (the admin exception covers notice only) |
 | Customer notifications | Created | **Not created** |
+| Treatments per booking | Up to five, as one appointment (since v3.0.0) | One |
 
-**Current admin calendar (public demo, captured 7 October 2026 at desktop width).** The demo's admin area is read-only. The dates shown are past days with existing fictional bookings; they are not selectable in the customer flow.
+**Admin calendar (public demo, captured 7 October 2026 at desktop width, release v2.1.0).** The demo now runs v3.0.0, where a multi-treatment appointment appears as one booking with the combined name and total; no v3.0.0 screenshot is published yet. The demo's admin area is read-only. The dates shown are past days with existing fictional bookings; they are not selectable in the customer flow.
 
 ![Admin day view for Tuesday 6 October 2026 in the read-only demo: a booking 09:05–10:05 with preparation 09:00–09:05, free time, the 13:00–14:00 break shown as closed, free time, and a booking 16:15–17:00 with preparation 16:10–16:15](../../assets/screenshots/11-v2.1.0-admin-day-2026-10-06.jpg)
 
@@ -117,7 +119,7 @@ stateDiagram-v2
 
 - **Confirmed** is the only status that can change.
 - **Completed**, **No-show** and **Cancelled** are final. Undoing them was deliberately left out of V1.
-- A **cancelled** booking stops blocking the calendar at once, so the time can be booked again.
+- A **cancelled** booking stops blocking the calendar at once, so the time can be booked again. Cancelling a multi-treatment appointment cancels the whole appointment.
 - If a customer cancels at the same moment the admin changes the status, the database resolves it cleanly and only one change wins. This is covered by an automated concurrency test.
 
 ## Related documents

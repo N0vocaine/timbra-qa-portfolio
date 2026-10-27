@@ -4,6 +4,8 @@ These cases cover the **public offer**: which eligible times an online customer 
 
 MB2-001 to MB2-004 were written for the first V2 rule (both edges of every free window). In their scenarios (a single free window, or one window between two bookings) the current rule gives the same expected times (booking-anchored edges plus the day's earliest and latest start; see [Magnetic Booking](../../product/magnetic-booking.md)).
 
+**Release v3.0.0 (27 October 2026):** the public-offer rules in these cases are unchanged; for a multi-treatment appointment they apply to the combined length. Multi-service booking is covered by its own automated tests, which are not catalogued on this page.
+
 The **MB2-** cases are new for V2. They are not part of the original V1 catalogue, so their IDs start at 001.
 
 **Shared scenario** (used by MB2-002 to MB2-004, and the same as the demo day):
@@ -134,4 +136,4 @@ The **MB2-** cases are new for V2. They are not part of the original V1 catalogu
 
 ---
 
-Results: MB2-001 to MB2-004 are part of the automated unit and domain-logic suite that passed (654 tests) on 29 September 2026. MB2-005 to MB2-008 belong to release v2.1.0, whose full suite (1,118 automated tests including real-database integration tests on an isolated test database) passed on 6 October 2026. See [From V1 to V2: Verification](../../product/evolution-v1-to-v2.md#6-verification).
+Results: MB2-001 to MB2-004 are part of the automated unit and domain-logic suite that passed (654 tests) on 29 September 2026. MB2-005 to MB2-008 belong to release v2.1.0, whose full suite (1,118 automated tests including real-database integration tests on an isolated test database) passed on 6 October 2026. In release v3.0.0 the full suite (1,212 automated tests, including the tests behind MB2-001 to MB2-008) passed again on 27 October 2026, on an isolated test database. See [From V1 to V2: Verification](../../product/evolution-v1-to-v2.md#6-verification).

@@ -2,11 +2,11 @@
 
 All screenshots use fictional data. None of them comes from production. Each one is labelled by version and capture date.
 
-## Current (release v2.1.0, captured 7 October 2026 from the public demo)
+## Latest captures (release v2.1.0, captured 7 October 2026 from the public demo; no v3.0.0 captures yet)
 
 | File | Shows | What it demonstrates | Used in |
 |---|---|---|---|
-| `09-v2.1.0-public-booking-week-2026-10-20.jpg` | Public booking at desktop width (1024 px), scrolled just below the demo's fictional-data notice: "Classic facial", day-and-time step for days from 20 October 2026 | Days without bookings, split by the 13:00–14:00 break: each window offers its earliest and latest start (09:05, 12:00, 14:05, 16:00; 19:00 on Thursday). Times in time order with the recommended one marked. | [README](../../README.md), [Magnetic Booking](../../docs/product/magnetic-booking.md#current-behaviour-v2-release-v210) |
+| `09-v2.1.0-public-booking-week-2026-10-20.jpg` | Public booking at desktop width (1024 px), scrolled just below the demo's fictional-data notice: "Classic facial", day-and-time step for days from 20 October 2026 | Days without bookings, split by the 13:00–14:00 break: each window offers its earliest and latest start (09:05, 12:00, 14:05, 16:00; 19:00 on Thursday). Times in time order with the recommended one marked. | [README](../../README.md), [Magnetic Booking](../../docs/product/magnetic-booking.md#current-behaviour-v2-release-v300) |
 | `11-v2.1.0-admin-day-2026-10-06.jpg` | Admin day view (read-only demo, desktop width) for 6 October 2026 | Two bookings with their 5-minute preparation strips, no buffer, the 13:00–14:00 break as "Stängt / ej tillgänglig", masked customer names | [Booking flow](../../docs/product/booking-flow.md#3-admin-journey) |
 | `12-v2.1.0-admin-week-2026-10-05.jpg` | Admin week view (read-only demo, desktop width), week 41, 5–11 October 2026 | The week's three bookings with preparation strips, the break on Monday–Thursday, closed Friday and Sunday, Saturday 10–13, Thursday until 20:00 | [Booking flow](../../docs/product/booking-flow.md#3-admin-journey) |
 | `10-v2.1.0-admin-list-2026-10-06.jpg` | Admin list view (read-only demo) for 6 October 2026 | Preparation as its own 5-minute row before each booking, no buffer, the break as "Stängt / ej tillgänglig", masked customer names | [From V1 to V2: Demo review](../../docs/product/evolution-v1-to-v2.md#demo-review-7-october-2026) |
