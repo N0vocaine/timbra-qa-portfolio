@@ -7,7 +7,7 @@ This page follows one product decision from start to finish:
 | Where | What it runs |
 |---|---|
 | [Live demo](https://timbra-booking-demo.vercel.app) | **V2 pilot**, with fictional data |
-| Production (the pilot salon's site) | V2 since 30 September 2026; release **v2.1.0** since 6 October 2026 (deployment verified with read-only checks). Validation by the salon owner is still pending. |
+| Production (the pilot salon's site) | V2 since 30 September 2026; release v2.1.0 from 6 October 2026; release **v3.0.0** (multi-service booking) since 27 October 2026. Each deployment was verified with read-only checks. The salon owner has validated the booking algorithm (how times are offered and recommended); her validation of the other features, including multi-service booking, is pending. |
 | This portfolio | Documentation only. The application source code is private. |
 
 ---
@@ -163,7 +163,19 @@ The evidence is kept separate by kind.
 | **How it was verified** | 1,118 automated tests, including real-database integration tests, on an isolated, throwaway test database (never on review or production data), run on the release candidate and on the final commit · code review before the release candidate · the candidate deployed to the demo first, then the final release to production · read-only checks on both sites in Swedish and English (offered times, break boundaries, theme, "Back to booking", privacy headers) · deployed versions confirmed on the hosting platform |
 | **Not verified in this release** | Production admin views behind the salon owner's login · a real screen reader · the salon owner's acceptance |
 | **Release practice** | Semantic versioning with a tested release candidate (v2.1.0-rc.1) and a final tag created only after the production deployment was verified. There were no database migrations; the break was applied as configuration, without moving or cancelling existing bookings. |
-| **Known issues** | On short admin calendar cards, preparation is visible only as a hatched strip without text. A customer who tries to cancel an appointment that has already started sees the "less than 24 hours left" message. Fixes for both are in review (7 October 2026) and are **not released** ([known limitations, L12](../qa/known-limitations-and-future-qa.md)). |
+| **Known issues** | On short admin calendar cards, preparation is visible only as a hatched strip without text. A customer who tries to cancel an appointment that has already started sees the "less than 24 hours left" message. Fixes for both are in review (7 October 2026) and are **not released**, also not in v3.0.0 ([known limitations, L12](../qa/known-limitations-and-future-qa.md)). |
+
+### Release v3.0.0 (27 October 2026)
+
+| | |
+|---|---|
+| **Behaviour** | Online customers can book up to five treatments as one appointment, in the order they choose: the first treatment's preparation once, then the treatments back to back; the offered times (same V2 rules) are calculated for the combined length; total duration and price are shown before confirming. The code also supports treatment categories and show-only entries; neither is configured on the hosted demo or production. |
+| **How it was verified** | 1,212 automated tests, including real-database integration tests, on an isolated, throwaway test database · the application that was live before the release tested on the new schema (1,131 passed on a full rerun) · browser checks on a local test stack (selecting one to five treatments, a sixth refused, a combination that fits no day, categories, desktop, mobile and keyboard, Swedish and English) · both hosted databases backed up before the two additive schema changes, and existing data compared afterwards · the candidate (v3.0.0-rc.1) deployed to the demo first, then the final release to production · read-only checks on both sites, including a multi-treatment selection up to the offered times (no booking created) |
+| **Server and database checks** | The server re-reads the chosen treatments, their order and totals and re-checks that the time is still offered. The database derives the stored totals and per-treatment records itself and refuses unknown, inactive, repeated or changed treatments. Separately, a database overlap constraint, unchanged since V1, rejects any booking whose occupied time collides with another. |
+| **Not verified in this release** | Production admin views behind the salon owner's login · a booking created on a hosted site · a real screen reader · the salon owner's acceptance of multi-service booking |
+| **Known issues** | The salon owner's manual booking takes one treatment per booking. The two v2.1.0 known issues above are still present. |
+
+No v3.0.0 screenshots are published yet; the screenshots on this page are dated captures of earlier releases.
 
 ### Demo review (7 October 2026)
 
@@ -174,8 +186,8 @@ A documentation review on 7 October 2026 followed the public booking flow from t
 *Admin list view (read-only demo) for 6 October 2026, the day in section 5, captured 7 October 2026: preparation is its own 5-minute row before each booking, there is no buffer, and the break appears as "Stängt / ej tillgänglig" (closed / unavailable). Customer names are masked.*
 
 ### Not verified yet
-- **Salon owner validation of V2** is planned and has not taken place. Until then, the V2 rules are pilot behaviour, not final.
-- **Production:** v2.1.0 was checked read-only after deployment (offered times, break, theme, "Back to booking", privacy headers). The production admin views behind the salon owner's login were not checked.
+- **Salon owner validation:** the salon owner has validated the booking algorithm, that is how times are offered and recommended (V2 with the v2.1.0 refinements); this was reported on 26 October 2026. Her validation of the other features, including multi-service booking (v3.0.0), has not taken place.
+- **Production:** v2.1.0 and v3.0.0 were checked read-only after deployment. The production admin views behind the salon owner's login were not checked.
 
 ## 7. What V1 contributed to V2
 

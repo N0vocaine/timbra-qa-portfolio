@@ -1,6 +1,6 @@
 # Known Limitations and Future QA Work
 
-Knowing what isn't covered is part of QA. These items are **engineering and QA maturity opportunities** for a pilot product (V2, release v2.1.0). None of them is a known, hidden product defect.
+Knowing what isn't covered is part of QA. These items are **engineering and QA maturity opportunities** for a pilot product (V2, release v3.0.0). None of them is a known, hidden product defect.
 
 ## 1. Current limitations
 
@@ -16,8 +16,9 @@ Knowing what isn't covered is part of QA. These items are **engineering and QA m
 | L8 | **No separately recorded visual check for the Agenda view** | Day and Week views have recorded manual verification at three widths; Agenda doesn't yet | Agenda uses the same underlying data as the Day view, which is automated |
 | L9 | **Limited accessibility, no cross-browser or performance testing** | Colour contrast of the theme is checked automatically, and keyboard focus and accessible names were checked manually for key pages; there is no screen-reader, cross-browser or performance evidence | Manual use in a single modern browser |
 | L10 | **No formal security review** | Security properties are tested individually, but no penetration test has been done | Two-layer authorization, fail-closed configuration, static secret guards |
-| L11 | **Salon-owner validation pending** | The released V2 behaviour (v2.1.0) is approved by the product owner but not yet validated by the salon owner | Tracked as a separate milestone; behaviour stays adjustable |
-| L12 | **Two known issues in v2.1.0** | On short admin calendar cards, preparation is visible only as a hatched strip without text. A customer who tries to cancel an appointment that has already started sees the "less than 24 hours left" message instead of a message saying it has started. | Cancellation is correctly refused in both cases. Fixes are implemented and in review (7 October 2026), **not released**. |
+| L11 | **Salon-owner validation partly done** | The salon owner has validated the booking algorithm (how times are offered and recommended; reported 26 October 2026). The other features, including multi-service booking (v3.0.0), are approved by the product owner but not yet validated by the salon owner | Tracked separately; behaviour stays adjustable |
+| L12 | **Two known issues since v2.1.0** | On short admin calendar cards, preparation is visible only as a hatched strip without text. A customer who tries to cancel an appointment that has already started sees the "less than 24 hours left" message instead of a message saying it has started. | Cancellation is correctly refused in both cases. Fixes are implemented and in review (7 October 2026), **not released** (still present in v3.0.0). |
+| L13 | **Multi-service booking limits (v3.0.0)** | The salon owner's manual booking takes one treatment per booking. Treatment categories and show-only entries are supported by the code but not configured on the hosted demo or production, so they have been checked only on a local test stack. No booking was created on a hosted site during the release checks | Automated tests, including database tests, cover the combined booking; hosted sites were checked read-only up to the offered times |
 
 ## 2. Planned QA improvements (roadmap)
 
@@ -27,7 +28,7 @@ Prioritised by risk reduction per unit of effort:
 |---|---|---|---|
 | 1 | **CI quality gate**: lint, type check and the automated suite before deployment | Regressions reaching production unnoticed | Run the infrastructure-free tests in CI first, then add a database service for the integration tests |
 | 2 | **Test-data isolation** for integration tests | False failures hiding real ones (RISK-009) | Give integration tests their own isolated data space |
-| 3 | **Browser E2E smoke suite** (e.g. Playwright) for the customer happy path and cancellation | Customer flow broken in the browser (RISK-008) | Automate one journey: treatment → date → recommended time → confirm → cancel |
+| 3 | **Browser E2E smoke suite** (e.g. Playwright) for the customer happy path and cancellation | Customer flow broken in the browser (RISK-008) | Automate one journey: treatment → date → recommended time → confirm → cancel. Progress (October 2026): Playwright is installed and its example tests run; no Timbra browser test exists yet |
 | 4 | **Staging environment** mirroring production | Integration issues only visible outside local | A separate environment fed the same database changes and smoke checks |
 | 5 | **Direct violation tests** for the remaining database rules (L7) | Silent loss of an integrity guarantee | One targeted test per rule |
 | 6 | **Agenda visual check** at three widths (L8) | Agenda layout regression (RISK-007) | One recorded manual round |
