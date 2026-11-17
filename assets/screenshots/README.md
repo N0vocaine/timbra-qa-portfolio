@@ -2,7 +2,20 @@
 
 All screenshots use fictional data. None of them comes from production. Each one is labelled by version and capture date.
 
-## Latest captures (release v2.1.0, captured 7 October 2026 from the public demo; no v3.0.0 captures yet)
+## Latest captures (release v3.3.1, captured 17 November 2026 from the public demo)
+
+Fictional demo salon "Studio Lumen (Demo)"; customer names are masked in the read-only admin. Captured with a scripted browser at desktop width (1280 px) and phone width (390 px, mobile emulation).
+
+| File | Shows | What it demonstrates | Used in |
+|---|---|---|---|
+| `13-v3.3.1-public-booking-times-2026-11-17.jpg` | Public booking in English, day-and-time step for 17–23 November 2026, desktop | Offered times in time order with one recommended time per day (lilac outline, star). On Friday 20 November, **10:15** is offered right after two existing bookings that end at 10:10 | [README](../../README.md) |
+| `14-v3.3.1-public-booking-details-mobile-2026-11-17.jpg` | Public booking in Swedish at phone width, day-and-time step with 12:00 on Wednesday 18 November chosen | The chosen time (12:00) in the plum gradient with a check mark, next to recommended times (lilac, star) and plain offered times (white) | — |
+| `15-v3.3.1-admin-day-2026-11-20.jpg` | Read-only admin day view, 20 November 2026, desktop | Plum gradient header with the logo; two confirmed bookings in muted lilac with a dark plum leading stripe and status symbol; the hatched preparation strip; masked names; the daily break | [README](../../README.md) |
+| `16-v3.3.1-admin-week-2026-11-16.jpg` | Read-only admin week view in English, week of 16 November 2026, desktop | The same bookings in the week grid with gray-plum time labels on an ivory grid | — |
+| `17-v3.3.1-admin-overview-mobile-2026-11-17.jpg` | Read-only admin overview at phone width | The admin header and primary button in the plum gradient on a phone | — |
+| `18-v3.3.1-public-home-2026-11-17.jpg` | Public start page in Swedish, desktop | The demo notice, the salon name and the "Boka tid" button in the plum gradient | — |
+
+## Release v2.1.0 captures (7 October 2026, from the public demo)
 
 | File | Shows | What it demonstrates | Used in |
 |---|---|---|---|
@@ -11,7 +24,7 @@ All screenshots use fictional data. None of them comes from production. Each one
 | `12-v2.1.0-admin-week-2026-10-05.jpg` | Admin week view (read-only demo, desktop width), week 41, 5–11 October 2026 | The week's three bookings with preparation strips, the break on Monday–Thursday, closed Friday and Sunday, Saturday 10–13, Thursday until 20:00 | [Booking flow](../../docs/product/booking-flow.md#3-admin-journey) |
 | `10-v2.1.0-admin-list-2026-10-06.jpg` | Admin list view (read-only demo) for 6 October 2026 | Preparation as its own 5-minute row before each booking, no buffer, the break as "Stängt / ej tillgänglig", masked customer names | [From V1 to V2: Demo review](../../docs/product/evolution-v1-to-v2.md#demo-review-7-october-2026) |
 
-All current screenshots were captured on 7 October 2026 at desktop width. Admin captures use past dates that have fictional bookings; those dates are not selectable in the customer flow. Not shown live: on 7 October 2026 the demo had no bookings on any selectable future date, so the time offered next to an existing booking could not be captured. Nothing was booked to create one.
+The v2.1.0 screenshots were captured on 7 October 2026 at desktop width, before the v3.3.0 redesign. Admin captures use past dates that have fictional bookings; those dates are not selectable in the customer flow. Not shown live: on 7 October 2026 the demo had no bookings on any selectable future date, so the time offered next to an existing booking could not be captured. Nothing was booked to create one.
 
 ## History that explains V1 → V2
 
