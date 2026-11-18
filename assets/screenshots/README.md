@@ -2,15 +2,26 @@
 
 All screenshots use fictional data. None of them comes from production. Each one is labelled by version and capture date.
 
-## Latest captures (release v3.3.1, captured 17 November 2026 from the public demo)
+## Latest captures (release v3.4.0, captured 18 November 2026 from the public demo)
+
+Fictional demo salon "Studio Lumen (Demo)"; customer names are masked in the read-only admin. The agenda illustrations contain fictional content only.
+
+| File | Shows | What it demonstrates | Used in |
+|---|---|---|---|
+| `19-v3.4.0-public-home-2026-11-18.jpg` | Public start page in English, desktop (1440 px) | The heading, description and plum booking button with open space around them; the coral butterfly; an open planner on the left and two schedule pages on the right, behind the content | [README](../../README.md) |
+| `21-v3.4.0-public-home-mobile-2026-11-18.jpg` | Public start page in Swedish at phone width (390 px) | Content first: the illustrations are reduced to one faint corner page | — |
+| `20-v3.4.0-admin-day-2026-11-20.jpg` | Read-only admin day view, 20 November 2026, desktop (1440 px) | The coral butterfly logo; agenda illustrations in the side margins, softer than the calendar and outside it; the calendar keeps its full width | [README](../../README.md) |
+| `22-v3.4.0-admin-week-2026-11-16.jpg` | Read-only admin week view in English, week of 16 November 2026, wide desktop (1920 px) | The wider week grid with the illustrations moved outward to stay clear of it | — |
+
+## Release v3.3.1 captures (17 November 2026, from the public demo)
 
 Fictional demo salon "Studio Lumen (Demo)"; customer names are masked in the read-only admin. Captured with a scripted browser at desktop width (1280 px) and phone width (390 px, mobile emulation).
 
 | File | Shows | What it demonstrates | Used in |
 |---|---|---|---|
-| `13-v3.3.1-public-booking-times-2026-11-17.jpg` | Public booking in English, day-and-time step for 17–23 November 2026, desktop | Offered times in time order with one recommended time per day (lilac outline, star). On Friday 20 November, **10:15** is offered right after two existing bookings that end at 10:10 | [README](../../README.md) |
+| `13-v3.3.1-public-booking-times-2026-11-17.jpg` | Public booking in English, day-and-time step for 17–23 November 2026, desktop | Offered times in time order with one recommended time per day (lilac outline, star). On Friday 20 November, **10:15** is offered right after two existing bookings that end at 10:10. The booking steps look the same in v3.4.0 | — |
 | `14-v3.3.1-public-booking-details-mobile-2026-11-17.jpg` | Public booking in Swedish at phone width, day-and-time step with 12:00 on Wednesday 18 November chosen | The chosen time (12:00) in the plum gradient with a check mark, next to recommended times (lilac, star) and plain offered times (white) | — |
-| `15-v3.3.1-admin-day-2026-11-20.jpg` | Read-only admin day view, 20 November 2026, desktop | Plum gradient header with the logo; two confirmed bookings in muted lilac with a dark plum leading stripe and status symbol; the hatched preparation strip; masked names; the daily break | [README](../../README.md) |
+| `15-v3.3.1-admin-day-2026-11-20.jpg` | Read-only admin day view, 20 November 2026, desktop (before the side-margin illustrations) | Plum gradient header with the logo; two confirmed bookings in muted lilac with a dark plum leading stripe and status symbol; the hatched preparation strip; masked names; the daily break | — |
 | `16-v3.3.1-admin-week-2026-11-16.jpg` | Read-only admin week view in English, week of 16 November 2026, desktop | The same bookings in the week grid with gray-plum time labels on an ivory grid | — |
 | `17-v3.3.1-admin-overview-mobile-2026-11-17.jpg` | Read-only admin overview at phone width | The admin header and primary button in the plum gradient on a phone | — |
 | `18-v3.3.1-public-home-2026-11-17.jpg` | Public start page in Swedish, desktop | The demo notice, the salon name and the "Boka tid" button in the plum gradient | — |
